@@ -60,15 +60,29 @@ public class SubjectData {
         );
     }
 
-    public static int getSubjectIndex() {
-        return subjectIndex++;
-    }
-
     public static String getUID() {
         return INDEX_TYPE_SUBJECT + getSubjectIndex();
     }
-
-    public static List<Subject> getSubjectStore() {
-        return subjectStore;
+  public static boolean addSubject(Subject subject) {
+    // 이미 있다
+    if (subjectStore.contains(subject)) {
+      return false;
     }
+
+    subjectStore.add(subject);
+    return true;
+  }
+
+  public static String getNewUID() {
+    return INDEX_TYPE_SUBJECT + subjectIndex;
+  }
+
+  // Getter
+  public static List<Subject> getSubjectStore() {
+    return subjectStore;
+  }
+
+  private static int getSubjectIndex() {
+    return subjectIndex++;
+  }
 }
