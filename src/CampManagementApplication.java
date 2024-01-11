@@ -77,18 +77,109 @@ public class CampManagementApplication {
         System.out.println("\n수강생을 등록합니다...");
         System.out.print("수강생 이름 입력: ");
         String studentName = sc.next();
+
         // 기능 구현 (필수 과목, 선택 과목)
 
-        Student student = new Student(StudentData.getUID(), studentName); // 수강생 인스턴스 생성 예시 코드
-        // 기능 구현
-        System.out.println("수강생 등록 성공!\n");
+        // 필수 과목 선택
+        int index = 1;
+        int input = -1;
+        List<String> selectedMandatorySubject = new ArrayList<>();
+        List<Subject> mandatorySubjects = SubjectData.getSubjectStore().stream().
+                filter((subject -> subject.getSubjectType().equals("MANDATORY"))).toList();
+
+        while(true) {
+            sc.reset();
+            index = 1;
+
+            if(selectedMandatorySubject.size() == mandatorySubjects.size())
+                break;
+
+            System.out.println("\n필수 과목을 선택해주세요...(선택 완료는 0)");
+            for (Subject mandatory : mandatorySubjects) {
+                System.out.print(index++ + ". [" + mandatory.getSubjectName() + "]");
+                System.out.println(selectedMandatorySubject.contains(mandatory.getSubjectId()) ? " - 선택 완료" : "");
+            }
+
+            try {
+                input = sc.nextInt();
+
+                if(input == 0)
+                    break;
+
+                if(selectedMandatorySubject.contains(mandatorySubjects.get(input - 1).getSubjectId())) {
+                    System.out.println("\n** 이미 선택한 과목입니다! 다시 입력해주세요. **\n");
+                    continue;
+                }
+
+                selectedMandatorySubject.add(mandatorySubjects.get(input - 1).getSubjectId());
+            } catch (Exception e) {
+                System.out.println("\n** 잘못된 입력입니다! 다시 입력해주세요. **\n");
+            }
+        }
+
+        // 선택 과목 선택
+        index = 1;
+        input = -1;
+        List<String> selectedChoiceSubject = new ArrayList<>();
+        List<Subject> choiceSubjects = SubjectData.getSubjectStore().stream().
+                filter((subject -> subject.getSubjectType().equals("CHOICE"))).toList();
+
+        while(true) {
+            sc.reset();
+            index = 1;
+
+            if(selectedMandatorySubject.size() == mandatorySubjects.size())
+                break;
+
+            System.out.println("\n선택 과목을 선택해주세요...(선택 완료는 0)");
+            for (Subject choice : choiceSubjects) {
+                System.out.print(index++ + ". [" + choice.getSubjectName() + "]");
+                System.out.println(selectedChoiceSubject.contains(choice.getSubjectId()) ? " - 선택 완료" : "");
+            }
+
+            try {
+                input = sc.nextInt();
+
+                if(input == 0)
+                    break;
+
+                if(selectedChoiceSubject.contains(choiceSubjects.get(input - 1).getSubjectId())) {
+                    System.out.println("\n** 이미 선택한 과목입니다! 다시 입력해주세요. **\n");
+                    continue;
+                }
+
+                selectedChoiceSubject.add(choiceSubjects.get(input - 1).getSubjectId());
+            } catch (Exception e) {
+                System.out.println("\n** 잘못된 입력입니다! 다시 입력해주세요. **\n");
+            }
+        }
+
+        // 수강생 인스턴스 생성
+        Student student = new Student(StudentData.getNewUID(), studentName, selectedMandatorySubject, selectedChoiceSubject);
+
+        // 수강생 추가
+        if(StudentData.addStudent(student)) {
+            System.out.println("수강생 등록 성공!\n");
+        }
+        else {
+            System.out.println("수강생 등록 실패...\n");
+        }
+
+        displayStudentView();
     }
 
     // 수강생 목록 조회
     private static void inquireStudent() {
         System.out.println("\n수강생 목록을 조회합니다...");
         // 기능 구현
+        List<Student> students = StudentData.getSortedStudentStore();
+        for(Student s : students) {
+            System.out.println(s.toString());
+        }
+
         System.out.println("\n수강생 목록 조회 성공!");
+
+        displayStudentView();
     }
 
     private static void displayScoreView() {
