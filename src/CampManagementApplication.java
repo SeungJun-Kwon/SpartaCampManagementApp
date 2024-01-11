@@ -58,6 +58,7 @@ public class CampManagementApplication {
             System.out.println("1. 수강생 등록");
             System.out.println("2. 수강생 목록 조회");
             System.out.println("3. 수강생 이름으로 조회");
+            System.out.println("4. 수강생 정보 수정");
             System.out.print("관리 항목을 선택하세요...");
             int input = sc.nextInt();
 
@@ -66,6 +67,7 @@ public class CampManagementApplication {
                 case 1 -> createStudent(); // 수강생 등록
                 case 2 -> inquireStudent(); // 수강생 목록 조회
                 case 3 -> inquireStudentByName(); // 수강생 이름으로 조회
+                case 4 -> displayModifyStudent();
                 default -> {
                     System.out.println("잘못된 입력입니다.\n메인 화면 이동...");
                     flag = false;
@@ -197,8 +199,57 @@ public class CampManagementApplication {
 
         System.out.println();
         for(Student s : result) {
-            System.out.println(s.toString());
+            System.out.println(s.toString() + "\n");
         }
+    }
+
+    private static void displayModifyStudent() {
+        System.out.println("\n수강생 수정...");
+
+        System.out.print("수정할 수강생의 이름을 입력해주세요. ");
+        String name = sc.next();
+
+        List<Student> result = StudentData.findStudentByName(name);
+        if(result == null || result.isEmpty()) {
+            System.out.println(name + " 이름을 가진 수강생이 존재하지 않습니다.\n");
+            return;
+        }
+        int index = 1;
+
+        System.out.println();
+        for(Student s : result) {
+            System.out.println(index++ + ". " + s.toString() + "\n");
+        }
+
+        System.out.print("수정할 수강생의 번호를 입력해주세요(종료는 0) : ");
+        while(true) {
+            try {
+                index = sc.nextInt();
+
+                if(index == 0)
+                    break;
+
+                Student s = result.get(index - 1);
+
+                System.out.println("\n[현재 수강생 정보]");
+                System.out.println(s.toString() + "\n");
+                System.out.print("수정할 이름을 입력해주세요 : ");
+
+                name = sc.next();
+
+                if(name.trim().isEmpty()) {
+                    System.out.println("잘못된 입력입니다. 다시 입력해주세요.");
+                    continue;
+                }
+
+                s.setStudentName(name);
+                break;
+            } catch (Exception e) {
+                System.out.println("잘못된 입력입니다. 다시 입력해주세요.");
+            }
+        }
+
+        System.out.println("수강생 수정을 종료합니다.\n");
     }
 
     private static void displayScoreView() {
