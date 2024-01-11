@@ -79,7 +79,7 @@ public class CampManagementApplication {
         String studentName = sc.next();
         // 기능 구현 (필수 과목, 선택 과목)
 
-        Student student = new Student(StudentData.getUID(), studentName); // 수강생 인스턴스 생성 예시 코드
+        Student student = new Student(StudentData.getNewUID(), studentName); // 수강생 인스턴스 생성 예시 코드
         // 기능 구현
         System.out.println("수강생 등록 성공!\n");
     }
@@ -125,7 +125,7 @@ public class CampManagementApplication {
     private static void createScore() {
         String studentId = getStudentId(); // 관리할 수강생 고유 번호
         System.out.println("시험 점수를 등록합니다...");
-        // 기능 구현
+        // 기능 구현, 점수를 입력하면
         System.out.println("\n점수 등록 성공!");
     }
 
@@ -168,7 +168,7 @@ public class CampManagementApplication {
         }
     }
 
-    private static void viewAllSubject() {
+    private static void viewAllSubject() { // 과목 조회.
         for(Subject s : SubjectData.getSubjectStore()) {
             System.out.println("[ " + s.getSubjectId() + " ]\n" + s.getSubjectName() + "\n" + s.getSubjectType() + "\n");
         }
