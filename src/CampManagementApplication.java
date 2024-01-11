@@ -28,18 +28,18 @@ public class CampManagementApplication {
         while (flag) {
             System.out.println("\n==================================");
             System.out.println("내일배움캠프 수강생 관리 프로그램 실행 중...");
+            System.out.println("0. 프로그램 종료");
             System.out.println("1. 수강생 관리");
             System.out.println("2. 점수 관리");
             System.out.println("3. 과목 관리");
-            System.out.println("4. 프로그램 종료");
             System.out.print("관리 항목을 선택하세요...");
             int input = sc.nextInt();
 
             switch (input) {
+                case 0 -> flag = false; // 프로그램 종료
                 case 1 -> displayStudentView(); // 수강생 관리
                 case 2 -> displayScoreView(); // 점수 관리
                 case 3 -> displaySubjectView();
-                case 4 -> flag = false; // 프로그램 종료
                 default -> {
                     System.out.println("잘못된 입력입니다.\n되돌아갑니다!");
                     Thread.sleep(2000);
@@ -71,12 +71,11 @@ public class CampManagementApplication {
                     flag = false;
                 }
             }
-        }
 
-        try {
-            displayMainView();
-        } catch (InterruptedException e) {
-            System.out.println("프로그램을 종료합니다.");
+            if(input != 0){
+                System.out.println("돌아가시려면 아무 키나 누르고 엔터를 입력해주세요.");
+                sc.next();
+            }
         }
     }
 
@@ -126,8 +125,6 @@ public class CampManagementApplication {
         }
 
         // 선택 과목 선택
-        index = 1;
-        input = -1;
         List<String> selectedChoiceSubject = new ArrayList<>();
         List<Subject> choiceSubjects = SubjectData.getSubjectStore().stream().
                 filter((subject -> subject.getSubjectType().equals("CHOICE"))).toList();
@@ -172,8 +169,6 @@ public class CampManagementApplication {
         else {
             System.out.println("수강생 등록 실패...\n");
         }
-
-        displayStudentView();
     }
 
     // 수강생 목록 조회
@@ -186,11 +181,6 @@ public class CampManagementApplication {
         }
 
         System.out.println("\n수강생 목록 조회 성공!\n");
-
-        System.out.println("돌아가시려면 아무 키나 누르고 엔터를 입력해주세요.");
-        sc.next();
-
-        displayStudentView();
     }
 
     private static void inquireStudentByName() {
@@ -202,7 +192,6 @@ public class CampManagementApplication {
         List<Student> result = StudentData.findStudentByName(name);
         if(result == null || result.isEmpty()) {
             System.out.println(name + " 이름을 가진 수강생이 존재하지 않습니다.\n");
-            displayStudentView();
             return;
         }
 
@@ -210,11 +199,6 @@ public class CampManagementApplication {
         for(Student s : result) {
             System.out.println(s.toString());
         }
-
-        System.out.println("돌아가시려면 아무 키나 누르고 엔터를 입력해주세요.");
-        sc.next();
-
-        displayStudentView();
     }
 
     private static void displayScoreView() {
