@@ -35,16 +35,21 @@ public class SubjectData {
     return true;
   }
 
-  public static String getNewUID() {
-    return INDEX_TYPE_SUBJECT + subjectIndex;
+  public static String getNewId() {
+    return INDEX_TYPE_SUBJECT + subjectIndex++;
   }
 
-  // Getter
+  public static Subject findSubjectById(String id) {
+    for (Subject subject : subjectStore) {
+      if (Objects.equals(id, subject.getSubjectId())) {
+        return subject;
+      }
+    }
+    return null;
+  }
+
+
   public static List<Subject> getSubjectStore() {
     return subjectStore;
-  }
-
-  private static int getSubjectIndex() {
-    return subjectIndex++;
   }
 }

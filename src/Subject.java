@@ -1,7 +1,7 @@
 public class Subject {
     private final String subjectId;
-    private final String subjectName;
-    private final String subjectType;
+    private String subjectName;
+    private String subjectType;
 
     public Subject(String seq, String subjectName, String subjectType) {
         this.subjectId = seq;
@@ -22,4 +22,11 @@ public class Subject {
         return subjectType;
     }
 
+    public void setSubjectName(String subjectName) {
+        this.subjectName = subjectName;
+    }
+
+    public void setSubjectType(String subjectType) {
+        this.subjectType = subjectType;
+    }
 }
