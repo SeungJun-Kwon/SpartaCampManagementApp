@@ -66,11 +66,8 @@ public class Student {
 
     @Override
     public String toString() {
-        return "Student{" +
-                "studentId='" + studentId + '\'' +
-                ", studentName='" + studentName + '\'' +
-                ", mandatorySubjectList=" + mandatorySubjectList +
-                ", choiceSubjectList=" + choiceSubjectList +
-                '}';
+        return studentId + " : " + studentName + ",\n" +
+                "필수 과목 " + mandatorySubjectList +
+                "\n선택 과목 " + choiceSubjectList;
     }
 }

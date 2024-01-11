@@ -70,6 +70,12 @@ public class CampManagementApplication {
                 }
             }
         }
+
+        try {
+            displayMainView();
+        } catch (InterruptedException e) {
+            System.out.println("프로그램을 종료합니다.");
+        }
     }
 
     // 수강생 등록
@@ -128,7 +134,7 @@ public class CampManagementApplication {
             sc.reset();
             index = 1;
 
-            if(selectedMandatorySubject.size() == mandatorySubjects.size())
+            if(selectedChoiceSubject.size() == choiceSubjects.size())
                 break;
 
             System.out.println("\n선택 과목을 선택해주세요...(선택 완료는 0)");
