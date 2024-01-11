@@ -168,37 +168,46 @@ public class CampManagementApplication {
 
   private static void viewAllSubject() {
     for (Subject s : SubjectData.getSubjectStore()) {
-      System.out.println("[ " + s.getSubjectId() + " ]\n" + s.getSubjectName() + "\n" + s.getSubjectType() + "\n");
+      System.out.format("[%s] | %s - %s%n", s.getSubjectId(), s.getSubjectName(), s.getSubjectType());
     }
   }
 
   private static void createSubject() {
-    // 과목 이름 입력
-    System.out.println("\n과목을 등록합니다...");
-    System.out.print("과목 이름 입력: ");
-    String subjectName = sc.next().strip();
-    // 과목 타입 입력
-    System.out.println("\n과목 타입을 선택 해주세요");
-    System.out.println("1. 필수 과목\t2. 선택 과목");
-    System.out.print("과목 타입 선택: ");
-    int subjectTypeInput = Integer.parseInt(sc.next().strip());
+    while (true) {
+      try {
+        // 과목 이름 입력
+        System.out.println("\n과목을 등록합니다...");
+        System.out.print("과목 이름 입력: ");
+        String subjectName = sc.next().strip();
+        // 과목 타입 입력
+        System.out.println("\n과목 타입을 선택 해주세요");
+        System.out.println("1. 필수 과목\t2. 선택 과목");
+        System.out.print("과목 타입 선택: ");
+        int subjectTypeInput = Integer.parseInt(sc.next().strip());
 
-    String subjectType;
-    switch (subjectTypeInput) {
-      case 1 -> subjectType = "MANDATORY";
-      case 2 -> subjectType = "CHOICE";
-      default -> throw new IllegalStateException("Unexpected value: " + subjectTypeInput);
+        String subjectType;
+        switch (subjectTypeInput) {
+          case 1 -> subjectType = "MANDATORY";
+          case 2 -> subjectType = "CHOICE";
+          default -> throw new IllegalStateException("Unexpected value: " + subjectTypeInput);
+        }
+
+        // 과목 저장소에 추가
+        Subject subject = new Subject(SubjectData.getNewUID(), subjectName, subjectType);
+
+        if (SubjectData.addSubject(subject)) {
+          System.out.println("과목 등록 성공!\n");
+          break;
+        } else {
+          System.out.println("과목 등록 실패!\n");
+        }
+      } catch (Exception e) {
+        System.out.println("\n** 잘못된 입력입니다! 다시 입력해주세요. **\n");
+      }
     }
-
-    // 과목 저장소에 추가
-    Subject subject = new Subject(SubjectData.getNewUID(), subjectName, subjectType);
-
-    if (SubjectData.addSubject(subject)){
-      System.out.println("과목 등록 성공!\n");
-    }else {
-      System.out.println("과목 등록 실패!\n");
-    }
-
     displaySubjectView();
+  }
+
+  private static void updateSubjectById() {
   }
 }
