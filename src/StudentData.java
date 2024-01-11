@@ -11,7 +11,7 @@ public class StudentData {
         return studentIndex++;
     }
 
-    public static String getUID() {
+    public static String getNewUID() {
         return INDEX_TYPE_STUDENT + getStudentIndex();
     }
 
