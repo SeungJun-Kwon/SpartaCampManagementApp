@@ -149,6 +149,7 @@ public class CampManagementApplication {
       System.out.println("과목 관리 실행 중...");
       System.out.println("1. 전체 과목 리스트 조회");
       System.out.println("2. 과목 등록");
+      System.out.println("3. 과목 수정");
       System.out.println("4. 메인 화면 이동");
       System.out.print("관리 항목을 선택하세요...");
       int input = sc.nextInt();
@@ -156,7 +157,7 @@ public class CampManagementApplication {
       switch (input) {
         case 1 -> viewAllSubject(); // 수강생의 과목별 시험 회차 및 점수 등록
         case 2 -> createSubject();  // 신규 과목 등록
-        // TODO
+        case 3 -> updateSubjectById();
         case 4 -> flag = false; // 메인 화면 이동
         default -> {
           System.out.println("잘못된 입력입니다.\n메인 화면 이동...");
@@ -189,23 +190,24 @@ public class CampManagementApplication {
         switch (subjectTypeInput) {
           case 1 -> subjectType = "MANDATORY";
           case 2 -> subjectType = "CHOICE";
-          default -> throw new IllegalStateException("Unexpected value: " + subjectTypeInput);
+          default -> throw new IllegalStateException();
         }
 
         // 과목 저장소에 추가
-        Subject subject = new Subject(SubjectData.getNewUID(), subjectName, subjectType);
+        Subject subject = new Subject(SubjectData.getNewId(), subjectName, subjectType);
 
+        // 결과
         if (SubjectData.addSubject(subject)) {
           System.out.println("과목 등록 성공!\n");
-          break;
         } else {
           System.out.println("과목 등록 실패!\n");
         }
+        break;
       } catch (Exception e) {
+        e.printStackTrace();
         System.out.println("\n** 잘못된 입력입니다! 다시 입력해주세요. **\n");
       }
     }
-    displaySubjectView();
   }
     private static void viewAllSubject() { // 과목 조회.
         for(Subject s : SubjectData.getSubjectStore()) {
@@ -214,5 +216,42 @@ public class CampManagementApplication {
     }
 
   private static void updateSubjectById() {
+    // 수정할 과목 코드
+    System.out.println("\n과목을 수정합니다...");
+    System.out.print("과목 코드 입력: ");
+    Subject subject = SubjectData.findSubjectById(sc.next().strip());
+
+    if (subject == null) {
+      System.out.println("과목이 존재하지 않습니다.");
+    } else {
+      // 과목 이름 입력
+      System.out.format("%n[%s] | %s - %s%n", subject.getSubjectId(), subject.getSubjectName(), subject.getSubjectType());
+      System.out.println("\n과목 이름을 수정합니다...");
+      System.out.print("과목 이름 입력: ");
+      String subjectNameInput = sc.next().strip();
+      // 과목 타입 입력
+      System.out.format("%n[%s] | %s - %s%n", subject.getSubjectId(), subjectNameInput, subject.getSubjectType());
+      System.out.println("\n과목 타입을 수정합니다...");
+      System.out.println("1. 필수 과목\t2. 선택 과목");
+      System.out.print("과목 타입 선택: ");
+      int subjectTypeInput = sc.nextInt();
+
+      String subjectType;
+      switch (subjectTypeInput) {
+        case 1 -> subjectType = "MANDATORY";
+        case 2 -> subjectType = "CHOICE";
+        default -> throw new IllegalStateException();
+      }
+
+      // 과목 수정
+      subject.setSubjectName(subjectNameInput);
+      subject.setSubjectType(subjectType);
+
+      // 결과
+      System.out.println("과목 수정 성공!\n");
+      System.out.format("%n[%s] | %s - %s%n", subject.getSubjectId(), subject.getSubjectName(), subject.getSubjectType());
+    }
+
+
   }
 }
