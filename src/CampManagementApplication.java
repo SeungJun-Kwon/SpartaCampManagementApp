@@ -54,16 +54,18 @@ public class CampManagementApplication {
         while (flag) {
             System.out.println("==================================");
             System.out.println("수강생 관리 실행 중...");
+            System.out.println("0. 메인 화면 이동");
             System.out.println("1. 수강생 등록");
             System.out.println("2. 수강생 목록 조회");
-            System.out.println("3. 메인 화면 이동");
+            System.out.println("3. 수강생 이름으로 조회");
             System.out.print("관리 항목을 선택하세요...");
             int input = sc.nextInt();
 
             switch (input) {
+                case 0 -> flag = false; // 메인 화면 이동
                 case 1 -> createStudent(); // 수강생 등록
                 case 2 -> inquireStudent(); // 수강생 목록 조회
-                case 3 -> flag = false; // 메인 화면 이동
+                case 3 -> inquireStudentByName(); // 수강생 이름으로 조회
                 default -> {
                     System.out.println("잘못된 입력입니다.\n메인 화면 이동...");
                     flag = false;
@@ -176,14 +178,41 @@ public class CampManagementApplication {
 
     // 수강생 목록 조회
     private static void inquireStudent() {
-        System.out.println("\n수강생 목록을 조회합니다...");
+        System.out.println("\n수강생 목록을 조회합니다...\n");
         // 기능 구현
         List<Student> students = StudentData.getSortedStudentStore();
         for(Student s : students) {
             System.out.println(s.toString());
         }
 
-        System.out.println("\n수강생 목록 조회 성공!");
+        System.out.println("\n수강생 목록 조회 성공!\n");
+
+        System.out.println("돌아가시려면 아무 키나 누르고 엔터를 입력해주세요.");
+        sc.next();
+
+        displayStudentView();
+    }
+
+    private static void inquireStudentByName() {
+        System.out.println("\n이름으로 수강생 목록을 조회합니다...");
+
+        System.out.print("조회할 수강생의 이름을 입력해주세요. ");
+        String name = sc.next();
+
+        List<Student> result = StudentData.findStudentByName(name);
+        if(result == null || result.isEmpty()) {
+            System.out.println(name + " 이름을 가진 수강생이 존재하지 않습니다.\n");
+            displayStudentView();
+            return;
+        }
+
+        System.out.println();
+        for(Student s : result) {
+            System.out.println(s.toString());
+        }
+
+        System.out.println("돌아가시려면 아무 키나 누르고 엔터를 입력해주세요.");
+        sc.next();
 
         displayStudentView();
     }

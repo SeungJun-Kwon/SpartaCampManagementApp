@@ -44,4 +44,8 @@ public class StudentData {
         studentStore.put(student.getStudentId(), student);
         return true;
     }
+
+    public static List<Student> findStudentByName(String name) {
+        return studentStore.values().stream().filter(s ->  s.getStudentName().equals(name)).toList();
+    }
 }
