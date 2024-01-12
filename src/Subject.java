@@ -1,5 +1,5 @@
 public class Subject {
-    private String subjectId;
+    private final String subjectId;
     private String subjectName;
     private String subjectType;
 
@@ -22,4 +22,11 @@ public class Subject {
         return subjectType;
     }
 
+    public void setSubjectName(String subjectName) {
+        this.subjectName = subjectName;
+    }
+
+    public void setSubjectType(String subjectType) {
+        this.subjectType = subjectType;
+    }
 }
