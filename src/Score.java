@@ -2,28 +2,27 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class Score {
-    private static String scoreId;
-    private static int scoreIndex;
-    private static int score;
-    private static Map<Integer, Integer> data;
+    private String scoreId;
+    private int scoreIndex;
+    private int scoreValue;
 
-    public Score(int scoreIndex, int score) {
+    public Score(String scoreId, int scoreIndex, int scoreValue) {
         this.scoreId = scoreId;
         this.scoreIndex = scoreIndex;
-        this.score = score;
-        this.data = new HashMap<>();
+        this.scoreValue = scoreValue;
     }
 
-    public static String getScoreId() {
+    public String getScoreId() {
         return scoreId;
     }
-    public static int getScoreIndex() {
+    public int getScoreIndex() {
         return scoreIndex;
     }
-    public static int getScore() {
-        return score;
+    public int getScoreValue() {
+        return scoreValue;
     }
-    public static void getDate(int scoreIndex, int score){
-        data.put(scoreIndex, score);
+
+    public void setScoreValue(int value) {
+        this.scoreValue = value;
     }
 }
