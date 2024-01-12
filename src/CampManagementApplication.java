@@ -315,8 +315,9 @@ public class CampManagementApplication {
       System.out.println("과목 관리 실행 중...");
       System.out.println("0. 메인 화면 이동");
       System.out.println("1. 전체 과목 리스트 조회");
-      System.out.println("2. 전체 과목 리스트 조회");
-      System.out.println("3. 전체 과목 리스트 조회");
+      System.out.println("2. 과목 추가");
+      System.out.println("3. 과목 수정");
+      System.out.println("4. 과목 삭제");
       System.out.print("관리 항목을 선택하세요...");
       int input = sc.nextInt();
 
@@ -325,6 +326,7 @@ public class CampManagementApplication {
         case 1 -> viewAllSubject(); // 수강생의 과목별 시험 회차 및 점수 등록
         case 2 -> createSubject(); // 수강생의 과목별 시험 회차 및 점수 등록
         case 3 -> updateSubjectById(); // 수강생의 과목별 시험 회차 및 점수 등록
+        case 4 -> deleteSubjectById();
         default -> {
           System.out.println("잘못된 입력입니다.\n메인 화면 이동...");
           flag = false;
@@ -379,7 +381,8 @@ public class CampManagementApplication {
     // 수정할 과목 코드
     System.out.println("\n과목을 수정합니다...");
     System.out.print("과목 코드 입력: ");
-    Subject subject = SubjectData.findSubjectById(sc.next().strip());
+    String inputSubjectId = sc.next().strip();
+    Subject subject = SubjectData.findSubjectById(inputSubjectId);
 
     if (subject == null) {
       System.out.println("과목이 존재하지 않습니다.");
@@ -423,6 +426,39 @@ public class CampManagementApplication {
       // 결과
       System.out.println("과목 수정 성공!\n");
       System.out.format("%n[%s] | %s - %s%n", subject.getSubjectId(), subject.getSubjectName(), subject.getSubjectType());
+    }
+  }
+
+  private static void deleteSubjectById() {
+    // 삭제할 과목 코드
+    while (true) {
+      try {
+        System.out.println("\n과목을 삭제합니다...");
+        System.out.print("과목 코드 입력: ");
+        String inputSubjectId = sc.next().strip();
+        Subject subject = SubjectData.findSubjectById(inputSubjectId);
+
+        // 과목 존재하는지 확인
+        if (subject == null) {
+          System.out.println("과목이 존재하지 않습니다.");
+          break;
+        }
+        // 수강 중인 학생이 없는지 확인
+        List<Student> enrolledStudents = StudentData.findStudentBySubjectName(subject.getSubjectName());
+        if (!enrolledStudents.isEmpty()){
+          System.out.println("해당 과목을 수강중인 학생이 존재합니다.");
+          enrolledStudents.forEach(s -> System.out.print(s.getStudentName() + ' '));
+          break;
+        }
+        // 삭제
+        SubjectData.deleteSubject(subject);
+        System.out.println("과목 삭제 성공.");
+        break;
+
+
+      } catch (Exception e) {
+        System.out.println("과목 삭제 실패.");
+      }
     }
   }
 }
