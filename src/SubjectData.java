@@ -39,6 +39,11 @@ public class SubjectData {
     return INDEX_TYPE_SUBJECT + subjectIndex++;
   }
 
+
+  public static List<Subject> getSubjectStore() {
+    return subjectStore;
+  }
+
   public static Subject findSubjectById(String id) {
     for (Subject subject : subjectStore) {
       if (Objects.equals(id, subject.getSubjectId())) {
@@ -48,8 +53,7 @@ public class SubjectData {
     return null;
   }
 
-
-  public static List<Subject> getSubjectStore() {
-    return subjectStore;
+  public static void deleteSubject(Subject subject) {
+    subjectStore.remove(subject);
   }
 }
