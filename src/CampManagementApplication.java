@@ -20,6 +20,10 @@ public class CampManagementApplication {
         }
     }
 
+
+    /*
+    메인 화면
+     */
     private static void displayMainView() throws InterruptedException {
         boolean flag = true;
         while (flag) {
@@ -46,6 +50,10 @@ public class CampManagementApplication {
         System.out.println("프로그램을 종료합니다.");
     }
 
+
+    /*
+    학생 관리 화면
+     */
     private static void displayStudentView() {
         boolean flag = true;
         while (flag) {
@@ -291,6 +299,11 @@ public class CampManagementApplication {
         System.out.println("수강생 수정을 종료합니다.\n");
     }
 
+
+    /*
+    점수 관리 화면
+     */
+
     private static void displayScoreView() {
         boolean flag = true;
         while (flag) {
@@ -347,6 +360,10 @@ public class CampManagementApplication {
         System.out.println("\n등급 조회 성공!");
     }
 
+
+    /*
+    과목 관리 화면
+     */
     private static void displaySubjectView() {
         boolean flag = true;
         while (flag) {
