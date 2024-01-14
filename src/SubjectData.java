@@ -44,13 +44,12 @@ public class SubjectData {
     return subjectStore;
   }
 
+  public static List<Subject> getMandatorySubjects(){
+    return subjectStore.stream().filter(s -> s.getSubjectType().equals(SUBJECT_TYPE_MANDATORY)).toList();
+  }
+
   public static Subject findSubjectById(String id) {
-    for (Subject subject : subjectStore) {
-      if (Objects.equals(id, subject.getSubjectId())) {
-        return subject;
-      }
-    }
-    return null;
+      return subjectStore.stream().filter(subject -> Objects.equals(id, subject.getSubjectId())).findFirst().orElse(null);
   }
 
   public static void deleteSubject(Subject subject) {
