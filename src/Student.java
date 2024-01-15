@@ -6,6 +6,8 @@ import java.util.Map;
 public class Student {
     private final String studentId;
     private String studentName;
+    private String studentState;
+
     private List<String> mandatorySubjectList;
     private List<String> choiceSubjectList;
 
@@ -15,6 +17,8 @@ public class Student {
     public Student(String seq, String studentName) {
         this.studentId = seq;
         this.studentName = studentName;
+        this.studentState = "Green";
+
         mandatorySubjectList = new ArrayList<>();
         choiceSubjectList = new ArrayList<>();
         scoreBySubject = new HashMap<>();
@@ -23,6 +27,8 @@ public class Student {
     public Student(String studentId, String studentName, List<String> mandatorySubjectList, List<String> choiceSubjectList) {
         this.studentId = studentId;
         this.studentName = studentName;
+        this.studentState = "Green";
+
         scoreBySubject = new HashMap<>();
 
         this.mandatorySubjectList = mandatorySubjectList;
@@ -47,6 +53,14 @@ public class Student {
 
     public void setStudentName(String studentName) {
         this.studentName = studentName;
+    }
+
+    public String getStudentState() {
+        return studentState;
+    }
+
+    public void setStudentState(String studentState) {
+        this.studentState = studentState;
     }
 
     public List<String> getMandatorySubjectList() {
@@ -104,6 +118,7 @@ public class Student {
     public String toString() {
         return studentId + " : " + studentName + ",\n" +
                 "필수 과목 " + mandatorySubjectList +
-                "\n선택 과목 " + choiceSubjectList;
+                "\n선택 과목 " + choiceSubjectList +
+                "\n현재 상태 " + studentState;
     }
 }
