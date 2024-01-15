@@ -51,7 +51,7 @@ public class ScoreData {
         }
 
         // 점수 0~100
-        if(!(score.getScore() >= 0 && score.getScore() <= 100)){
+        if(!(score.getScoreValue() >= 0 && score.getScoreValue() <= 100)){
             return false;
         }
 
@@ -72,7 +72,7 @@ public class ScoreData {
         if(target == null){
             return false;
         }else{
-            target.setScore(newScore);
+            target.setScoreValue(newScore);
         }
         return true;
     }
@@ -82,7 +82,7 @@ public class ScoreData {
 
         for(Score s : scoreStore.values()){
             if(s.getScoreIndex() == scoreIndex){
-               return essentialGrade(s.getScore());
+               return essentialGrade(s.getScoreValue());
             }
         }
         return "등록되지 않았습니다.";

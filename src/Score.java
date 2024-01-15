@@ -24,12 +24,12 @@ public class Score {
     }
 
     // 스코어 객체의 점수를 반환하는 메소드
-    public int getScore() {
+    public int getScoreValue() {
         return scoreValue;
     }
 
     // 스코어 객체의 점수를 수정하는 메소드
-    public void setScore(int newScore) {
+    public void setScoreValue(int newScore) {
         this.scoreValue = newScore;
     }
 }
