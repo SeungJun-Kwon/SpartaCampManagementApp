@@ -30,21 +30,6 @@ public class ScoreData {
 
     // 요구사항 1. 과목을 입력받아 회차와 점수를 추가하는 메서드
     public static boolean addScore(Score score) {
-        int index = score.getScoreIndex();
-
-        // 같은 회차가 존재하는지 검사 -> 입력 취소
-        boolean hasSameIndex = false;
-        for(Score s : scoreStore.values()) {
-            if (s.getScoreIndex() == index) {
-                hasSameIndex = true;
-                break;
-            }
-        }
-
-        if((hasSameIndex)) {
-            return false;
-        }
-
         // 회차 1~9
         if(!(score.getScoreIndex() >= 1 && score.getScoreIndex() <= 9)){
             return false;
@@ -57,6 +42,10 @@ public class ScoreData {
 
         scoreStore.put(score.getScoreId(), score);
         return true;
+    }
+
+    public static void removeScore(String scoreId) {
+        scoreStore.remove(scoreId);
     }
 
     // 요구사항 2. 과목별 회차 점수를 수정.
