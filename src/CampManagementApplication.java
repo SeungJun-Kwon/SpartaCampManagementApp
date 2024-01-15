@@ -435,7 +435,7 @@ public class CampManagementApplication {
 
                 return studentList.get(index - 1);
             } catch (Exception e) {
-                System.out.println("잘못된 입력입니다. 다시 입력해주세요.");
+                System.out.println("잘못된 입력입니다. 다시 입력해주세요.\n");
             }
         }
     }
@@ -457,10 +457,65 @@ public class CampManagementApplication {
         }
 
         // 2. 해당 학생의 과목 리스트(필수, 선택)들을 받고 추가할 과목을 선택
+        String selectedSubjectId;
+        List<String> subjectIdList = new ArrayList<>(student.getMandatorySubjectList());
+        subjectIdList.addAll(student.getChoiceSubjectList());
+
+        int index = 1;
+        for(String s : subjectIdList) {
+            System.out.println(index++ + ". " + SubjectData.findSubjectById(s).getSubjectName());
+        }
+
+        System.out.println();
+
+        while(true) {
+            try {
+                System.out.println("수정할 과목의 종류를 입력하시오...(종료는 0)\n입력 : ");
+                index = sc.nextInt();
+
+                if(index == 0) {
+                    return;
+                }
+
+                if(index > studentList.size()) {
+                    throw new Exception();
+                }
+
+                selectedSubjectId = subjectIdList.get(index - 1);
+                break;
+            } catch (Exception e) {
+                System.out.println("잘못된 입력입니다. 다시 입력해주세요.\n");
+            }
+        }
 
         // 3. 점수의 회차와 점수값을 입력
+        int scoreIndex, scoreValue;
+        while(true) {
+            System.out.print("[ " + SubjectData.findSubjectById(selectedSubjectId).getSubjectName() + " ]");
+            System.out.println(" 과목에 회차와 점수를 입력하시오...(종료는 0)");
+            try {
+                System.out.print("회차 : ");
+                scoreIndex = sc.nextInt();
+
+                if(scoreIndex == 0) {
+                    return;
+                }
+
+                System.out.print("점수 : ");
+                scoreValue = sc.nextInt();
+
+                if(scoreValue == 0) {
+                    return;
+                }
+
+                break;
+            } catch (Exception e) {
+                System.out.println("잘못된 입력입니다. 다시 입력해주세요.\n");
+            }
+        }
 
         // 4. 각 클래스에서 구현한 메소드들(get 메소드, add 메소드 등)을 통해 추가 시도
+        student.addScoreBySubject(selectedSubjectId, new Score(ScoreData.getNewUID(), scoreIndex, scoreValue));
 
         System.out.println("\n점수 등록 성공!");
     }
