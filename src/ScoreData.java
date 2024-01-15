@@ -122,18 +122,4 @@ public class ScoreData {
         }
         return s;
     }
-
-    //요구사항 3. 수강생의 특정 과목 회차별 등급을 조회
-//    public static String gradeCheck(String subject, int key){
-//        if (scoreStore.containsKey(subject)) {
-//            Map<Integer, Integer> grade = scoreStore.get(subject); // 등급은 String인데 Map value를 Integer로 하지 않으면 에러나요..
-//            if (grade.containsKey(key)) {
-//                return String.valueOf(grade.get(key));
-//            } else {
-//                return "등급이 존재하지 않습니다.\n";
-//            }
-//        } else {
-//            return "과목이 존재하지 않습니다.\n";
-//        }
-//    }
 }

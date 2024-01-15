@@ -258,9 +258,9 @@ public class CampManagementApplication {
             System.out.println("==================================");
             System.out.println("점수 관리 실행 중...");
             System.out.println("0. 메인 화면 이동");
-           /* System.out.println("1. 수강생의 과목별 시험 회차 및 점수 등록");
-            System.out.println("2. 수강생의 과목별 회차 점수 수정");
-            System.out.println("3. 수강생의 특정 과목 회차별 등급 조회");*/
+            /*System.out.println("1. 수강생의 과목별 시험 회차 및 점수 등록");
+            System.out.println("2. 수강생의 과목별 회차 점수 수정");*/
+            System.out.println("3. 수강생의 특정 과목 회차별 등급 조회");
             System.out.println("4. 회차 및 점수 등록");
             System.out.println("5. 모든 점수 조회");
             System.out.println("6. 회차별 점수 조회");
@@ -357,6 +357,15 @@ public class CampManagementApplication {
     String studentId = getStudentId(); // 관리할 수강생 고유 번호
     System.out.println("시험 점수를 등록합니다...");
     // 기능 구현
+    // 특정 학생의 특정 과목에 대한 점수(회차, 점수값)을 추가하는 메소드
+    // 1. 추가할 학생의 이름을 입력받아 해당 이름 학생들의 리스트를 받고 학생을 선택
+
+    // 2. 해당 학생의 과목 리스트(필수, 선택)들을 받고 추가할 과목을 선택
+
+    // 3. 점수의 회차와 점수값을 입력
+
+    // 4. 각 클래스에서 구현한 메소드들(get 메소드, add 메소드 등)을 통해 추가 시도
+
     System.out.println("\n점수 등록 성공!");
   }
 
@@ -366,15 +375,45 @@ public class CampManagementApplication {
     // 기능 구현 (수정할 과목 및 회차, 점수)
     System.out.println("시험 점수를 수정합니다...");
     // 기능 구현
+    // 특정 학생의 특정 과목에 대한 점수들 중에서 특정 회차의 점수값을 수정하는 메소드
+    // 1. 수정할 학생의 이름을 입력받아 해당 이름 학생들의 리스트를 받고 학생을 선택
+
+    // 2. 해당 학생의 과목 리스트(필수, 선택)들을 받고 수정할 과목을 선택
+
+    // 3. 해당 과목의 점수 정보(회차, 점수값)을 받고 수정할 회차를 선택
+    // 회차 정보가 없으면 "없음"을 출력
+
+    // 4. 수정할 점수값을 입력 후 수정 시도
     System.out.println("\n점수 수정 성공!");
   }
 
+
   // 수강생의 특정 과목 회차별 등급 조회
   private static void inquireRoundGradeBySubject() {
-    String studentId = getStudentId(); // 관리할 수강생 고유 번호
+    // String studentId = getStudentId(); // 관리할 수강생 고유 번호
     // 기능 구현 (조회할 특정 과목)
     System.out.println("회차별 등급을 조회합니다...");
     // 기능 구현
+    // 특정 학생의 특정 과목에 대한 회차별 점수값과 등급을 조회하는 메소드
+    // 1. 조회할 학생의 이름을 입력받아 해당 이름 학생들의 리스트를 받고 학생을 선택
+    System.out.print("조회할 학생의 이름을 입력하세요: ");
+    String studentName = sc.nextLine();
+    List<Student> students = StudentData.findStudentByName(studentName); // 해당 이름의 학생들을 보여줌
+    System.out.println(students);
+
+    // 2. 해당 학생의 과목 리스트(필수, 선택)들을 받고 조회할 과목을 선택
+
+    System.out.print("조회할 과목을 선택하세요: ");
+    String subjectName = sc.nextLine();
+    StudentData.findStudentBySubjectName(subjectName);
+
+
+    // 3. 해당 과목의 점수값들을 출력
+    // 가능하면 맨 밑에 평균 점수도 출력
+    for(Student s : StudentData.getStudentStore().values()){
+
+    }
+
     System.out.println("\n등급 조회 성공!");
   }
 

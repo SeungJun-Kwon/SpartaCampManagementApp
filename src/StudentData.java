@@ -54,10 +54,14 @@ public class StudentData {
     return studentStore.values().stream().filter(s -> s.getStudentName().equals(name)).toList();
   }
 
-  public static List<Student> findStudentBySubjectName(String name){
+  public static List<Student> findStudentBySubjectName(String name) { // 과목 id
     return studentStore.values()
-                       .stream()
-                       .filter(s -> (s.getMandatorySubjectList().contains(name) || s.getChoiceSubjectList().contains(name)))
-                       .toList();
+            .stream()
+            .filter(s -> (s.getMandatorySubjectList().contains(name) || s.getChoiceSubjectList().contains(name)))
+            .toList();
+  }
+
+  public static List<Student> findStudentByState(String state) {
+    return studentStore.values().stream().filter(s -> s.getStudentState().equals(state)).toList();
   }
 }
