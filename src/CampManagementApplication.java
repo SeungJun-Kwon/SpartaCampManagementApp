@@ -1,6 +1,7 @@
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
+import java.util.stream.IntStream;
 
 /**
  * Notification Java, 객체지향이 아직 익숙하지 않은 분들은 위한 소스코드 틀입니다. main 메서드를 실행하면 프로그램이 실행됩니다. model 의 클래스들과 아래 (// 기능 구현...) 주석 부분을 완성해주세요! 프로젝트 구조를 변경하거나 기능을
@@ -350,19 +351,19 @@ public class CampManagementApplication {
     private static void inquireAllStudentsScore() {
         List<Student> studentList = StudentData.getSortedStudentStore();
 
-        for(Student student : studentList) {
+        for (Student student : studentList) {
             System.out.println("\n[ " + student.getStudentName() + " ] 점수 정보\n");
             List<String> subjectList = new ArrayList<>();
             subjectList.addAll(student.getMandatorySubjectList());
             subjectList.addAll(student.getChoiceSubjectList());
 
-            for(String subjectId : subjectList) {
+            for (String subjectId : subjectList) {
                 String subjectName = SubjectData.findSubjectById(subjectId).getSubjectName();
                 System.out.println("\"" + subjectName + "\"");
                 List<String> scoreList = student.getScoreIdListBySubject(subjectId);
-                for(String scoreId : scoreList) {
+                for (String scoreId : scoreList) {
                     Score score = ScoreData.getScoreByID(scoreId);
-                    if(score == null || score.getScoreId().equals("0")) {
+                    if (score == null || score.getScoreId().equals("0")) {
                         continue;
                     }
 
@@ -578,8 +579,7 @@ public class CampManagementApplication {
             Score score = new Score(ScoreData.getNewUID(), scoreIndex, scoreValue);
             if (student.addScoreBySubject(selectedSubjectId, score) && ScoreData.addScore(score)) {
                 System.out.println("\n점수 등록 성공!");
-            }
-            else {
+            } else {
                 System.out.println("\n점수 등록 실패(이미 존재하는 회차이거나 학생이 수강하지 않는 과목)");
                 student.removeScoreBySubject(selectedSubjectId, score.getScoreIndex());
                 ScoreData.removeScore(score.getScoreId());
@@ -589,23 +589,66 @@ public class CampManagementApplication {
     // 수강생의 과목별 회차 점수 수정
 
     private static void updateRoundScoreBySubject() {
-        String studentId = getStudentId(); // 관리할 수강생 고유 번호
-        // 기능 구현 (수정할 과목 및 회차, 점수)
         System.out.println("시험 점수를 수정합니다...");
         // 기능 구현
         // 특정 학생의 특정 과목에 대한 점수들 중에서 특정 회차의 점수값을 수정하는 메소드
         // 1. 수정할 학생의 이름을 입력받아 해당 이름 학생들의 리스트를 받고 학생을 선택
+        List<Student> students = StudentData.findStudentByName(sc.nextLine().strip());
+        if (students.isEmpty()) {
+            System.out.println("학생이 존재하지 않습니다.");
+            return;
+        }
+        // 정확한 학생 선택
+        Student student;
+        if (students.size() > 1) {
+            System.out.println("학생을 선택 해주세요");
+            IntStream.range(1, students.size() + 1)
+                    .forEach(i -> System.out.format("%d. %s%n", i, students.get(i).getStudentName()));
+            System.out.format("%n학생 선택...");
+            student = students.get(Integer.parseInt(sc.next().strip()) - 1);
+        } else {
+            student = students.getFirst();
+        }
+
 
         // 2. 해당 학생의 과목 리스트(필수, 선택)들을 받고 수정할 과목을 선택
+        List<String> subjectIds = new ArrayList<>();
+        subjectIds.addAll(student.getMandatorySubjectList());
+        subjectIds.addAll(student.getChoiceSubjectList());
+        List<Subject> subjects = subjectIds.stream().map(SubjectData::getSubjectById).toList();
+
+        System.out.println("\n" + student.getStudentName() + "의 시험 점수를 수정합니다...");
+        System.out.println("과목을 선택 해주세요");
+        IntStream.range(1, subjects.size() + 1).forEach(i -> {
+            System.out.format("%d. %s%n", i, subjects.get(i).getSubjectName());
+        });
+        System.out.format("%n과목 선택...");
+
+        Subject subject = subjects.get(Integer.parseInt(sc.next().strip()) - 1);
 
         // 3. 해당 과목의 점수 정보(회차, 점수값)을 받고 수정할 회차를 선택
-        // 회차 정보가 없으면 "없음"을 출력
+        List<String> scoreIds = student.getScoreIdListBySubject(subject.getSubjectId());
+        List<Score> scores = scoreIds.stream().map(ScoreData::getScoreByID).toList();
+        if (scores.isEmpty()) {
+            System.out.println("점수 정보가 없습니다.");
+            return;
+        }
+
+        System.out.println("\n" + subject.getSubjectName() + "의 시험 점수를 수정합니다...");
+        System.out.println("회차를 선택 해주세요");
+        IntStream.range(1, scores.size() + 1)
+                .forEach(i -> System.out.format("%d회차: %s점%n", i, scores.get(i).getScoreValue()));
+        System.out.format("%n회차 선택...");
+        String scoreIndex = sc.next().strip();
+        Score score = scores.get(Integer.parseInt(scoreIndex) - 1);
 
         // 4. 수정할 점수값을 입력 후 수정 시도
+        System.out.println("\n" + scoreIndex + "회차의 시험 점수를 수정합니다...");
+        score.setScoreValue(Integer.parseInt(sc.next().strip()));
         System.out.println("\n점수 수정 성공!");
     }
-    // 수강생의 특정 과목 회차별 등급 조회
 
+    // 수강생의 특정 과목 회차별 등급 조회
     private static void inquireRoundGradeBySubject() {
         String studentId = getStudentId(); // 관리할 수강생 고유 번호
         // 기능 구현 (조회할 특정 과목)
