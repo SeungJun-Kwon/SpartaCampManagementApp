@@ -2,28 +2,33 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class Score {
-    private static String scoreId;
-    private static int scoreIndex;
-    private static int score;
-    private static Map<Integer, Integer> data;
+    private String scoreId;
+    private int scoreIndex;
+    private int score;
 
-    public Score(int scoreIndex, int score) {
+    public Score(String scoreId, int scoreIndex, int score) {
         this.scoreId = scoreId;
         this.scoreIndex = scoreIndex;
         this.score = score;
-        this.data = new HashMap<>();
     }
 
-    public static String getScoreId() {
+    // 스코어 객체의 고유 키를 반환하는 메소드
+    public String getScoreId() {
         return scoreId;
     }
-    public static int getScoreIndex() {
+
+    // 스코어 객체의 회차를 반환하는 메소드
+    public int getScoreIndex() {
         return scoreIndex;
     }
-    public static int getScore() {
+
+    // 스코어 객체의 점수를 반환하는 메소드
+    public int getScore() {
         return score;
     }
-    public static void getDate(int scoreIndex, int score){
-        data.put(scoreIndex, score);
+
+    // 스코어 객체의 점수를 수정하는 메소드
+    public void setScore(int newScore) {
+        this.score = newScore;
     }
 }
