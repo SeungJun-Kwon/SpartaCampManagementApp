@@ -51,7 +51,7 @@ public class ScoreData {
         }
 
         // 점수 0~100
-        if(!(score.getScore() >= 0 && score.getScore() <= 100)){
+        if(!(score.getScoreValue() >= 0 && score.getScoreValue() <= 100)){
             return false;
         }
 
@@ -72,7 +72,7 @@ public class ScoreData {
         if(target == null){
             return false;
         }else{
-            target.setScore(newScore);
+            target.setScoreValue(newScore);
         }
         return true;
     }
@@ -82,7 +82,7 @@ public class ScoreData {
 
         for(Score s : scoreStore.values()){
             if(s.getScoreIndex() == scoreIndex){
-               return essentialGrade(s.getScore());
+               return essentialGrade(s.getScoreValue());
             }
         }
         return "등록되지 않았습니다.";
@@ -122,18 +122,4 @@ public class ScoreData {
         }
         return s;
     }
-
-    //요구사항 3. 수강생의 특정 과목 회차별 등급을 조회
-//    public static String gradeCheck(String subject, int key){
-//        if (scoreStore.containsKey(subject)) {
-//            Map<Integer, Integer> grade = scoreStore.get(subject); // 등급은 String인데 Map value를 Integer로 하지 않으면 에러나요..
-//            if (grade.containsKey(key)) {
-//                return String.valueOf(grade.get(key));
-//            } else {
-//                return "등급이 존재하지 않습니다.\n";
-//            }
-//        } else {
-//            return "과목이 존재하지 않습니다.\n";
-//        }
-//    }
 }
