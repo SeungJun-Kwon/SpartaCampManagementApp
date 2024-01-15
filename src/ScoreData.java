@@ -1,5 +1,4 @@
-import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
@@ -21,7 +20,7 @@ public class ScoreData {
     }
 
     public static boolean addScore(Score score) {
-        if(scoreStore.containsKey(score.getScoreId())) {
+        if (scoreStore.containsKey(score.getScoreId())) {
             return false;
         }
 
@@ -30,11 +29,19 @@ public class ScoreData {
     }
 
     public static boolean setScoreValue(String id, int value) {
-        if(scoreStore.containsKey(id)) {
+        if (scoreStore.containsKey(id)) {
             scoreStore.get(id).setScoreValue(value);
             return true;
         }
 
         return false;
+    }
+
+    public static double getAverageScoreByScoreIds(List<String> ids) {
+        return ids.stream().map(ScoreData::getScoreById).mapToInt(Score::getScoreValue).average().orElse(0D);
+    }
+
+    public static double calculateAverageScore(List<Score> scores) {
+        return scores.stream().mapToInt(Score::getScoreValue).average().orElse(0F);
     }
 }
