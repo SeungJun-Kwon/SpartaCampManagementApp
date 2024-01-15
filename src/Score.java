@@ -12,17 +12,23 @@ public class Score {
         this.scoreValue = scoreValue;
     }
 
+    // 스코어 객체의 고유 키를 반환하는 메소드
     public String getScoreId() {
         return scoreId;
     }
+
+    // 스코어 객체의 회차를 반환하는 메소드
     public int getScoreIndex() {
         return scoreIndex;
     }
+
+    // 스코어 객체의 점수를 반환하는 메소드
     public int getScoreValue() {
         return scoreValue;
     }
 
-    public void setScoreValue(int value) {
-        this.scoreValue = value;
+    // 스코어 객체의 점수를 수정하는 메소드
+    public void setScoreValue(int newScore) {
+        this.scoreValue = newScore;
     }
 }

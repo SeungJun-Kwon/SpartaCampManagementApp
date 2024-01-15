@@ -296,24 +296,94 @@ public class CampManagementApplication {
         while (flag) {
             System.out.println("==================================");
             System.out.println("점수 관리 실행 중...");
-            System.out.println("1. 수강생의 과목별 시험 회차 및 점수 등록");
+            System.out.println("0. 메인 화면 이동");
+           /* System.out.println("1. 수강생의 과목별 시험 회차 및 점수 등록");
             System.out.println("2. 수강생의 과목별 회차 점수 수정");
-            System.out.println("3. 수강생의 특정 과목 회차별 등급 조회");
-            System.out.println("4. 메인 화면 이동");
+            System.out.println("3. 수강생의 특정 과목 회차별 등급 조회");*/
+            System.out.println("4. 회차 및 점수 등록");
+            System.out.println("5. 모든 점수 조회");
+            System.out.println("6. 회차별 점수 조회");
+            System.out.println("7. 점수 수정");
+            System.out.println("8. 등급 조회");
             System.out.print("관리 항목을 선택하세요...");
             int input = sc.nextInt();
 
             switch (input) {
+                case 0 -> flag = false; // 메인 화면 이동
                 case 1 -> createScore(); // 수강생의 과목별 시험 회차 및 점수 등록
                 case 2 -> updateRoundScoreBySubject(); // 수강생의 과목별 회차 점수 수정
                 case 3 -> inquireRoundGradeBySubject(); // 수강생의 특정 과목 회차별 등급 조회
-                case 4 -> flag = false; // 메인 화면 이동
+                case 4 -> addScore(); // 회차 및 점수 등록
+                case 5 -> getScore(); // 모든 점수 조회
+                case 6 -> getScoreByIndex(); // 회차별 점수 조회
+                case 7 -> uppdateScore(); // 점수 수정
+                case 8 -> gradeCheckRe(); // 등급 조회
                 default -> {
                     System.out.println("잘못된 입력입니다.\n메인 화면 이동...");
                     flag = false;
                 }
             }
         }
+    }
+    private static void addScore() {
+        // 점수 정보를 입력받고 Data에 추가하는 메소드
+        // 1. 회차와 점수 값을 입력받는다
+        System.out.print("회차 : ");
+        int index = sc.nextInt();
+        System.out.print("점수 : ");
+        int scoreValue = sc.nextInt();
+
+        // 2. 입력받은 값으로 새로운 Score를 만든다
+        Score score = new Score(ScoreData.getNewUID(), index, scoreValue);
+        System.out.println(score.getScoreIndex() + " 회차 " + score.getScore() + "점");
+
+        // 3. 방금 만든 Score를 ScoreData에 추가 시도한다
+        if(ScoreData.addScore(score)) {
+            System.out.println("점수 추가가 완료됐습니다!");
+        }
+        else {
+            System.out.println("점수 추가가 실패했습니다");
+        }
+    }
+
+    private static void getScore() {
+        // 모든 점수의 정보를 출력하는 메소드
+        List<Score> scoreList = ScoreData.getScoreList();
+
+        for(Score s : scoreList) {
+            System.out.println(s.getScoreIndex() + "회차 점수 : " + s.getScore());
+        }
+        System.out.println("\n점수 조회 완료\n");
+    }
+
+    private static void getScoreByIndex() {
+        // 회차를 받아서 점수를 보여주기
+        // 1. 회차를 입력받기
+        System.out.print("회차를 입력하세요: ");
+        int a = sc.nextInt();
+
+        // 2. 해당 회차에 대한 정보들을 가져오기
+        List<Score> li;
+        li = ScoreData.getScoreByIndex(a);
+
+        for(int i = 0; i < li.size(); i++) {
+            Score score = li.get(i);
+            System.out.println(a + "회차 점수 : " + score.getScore());
+        }
+    }
+    // 점수 수정 메서드
+    private static void uppdateScore(){
+        System.out.print("수정할 회차를 입력하세요: ");
+        int n = sc.nextInt();
+        System.out.print("새로운 점수를 입력하세요: ");
+        int s = sc.nextInt();
+        ScoreData.updateScore(n, s);
+    }
+    // 등급 조회 메서드
+    private static void gradeCheckRe(){
+        System.out.print("조회할 회차를 입력하세요: ");
+        int n = sc.nextInt();
+        System.out.println(n + " 회차의 등급: " + ScoreData.gradeCheck(n));
     }
 
     private static String getStudentId() {
