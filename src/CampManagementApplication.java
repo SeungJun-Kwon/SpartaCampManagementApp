@@ -297,9 +297,9 @@ public class CampManagementApplication {
             System.out.println("==================================");
             System.out.println("점수 관리 실행 중...");
             System.out.println("0. 메인 화면 이동");
-           /* System.out.println("1. 수강생의 과목별 시험 회차 및 점수 등록");
+            System.out.println("1. 수강생의 과목별 시험 회차 및 점수 등록");
             System.out.println("2. 수강생의 과목별 회차 점수 수정");
-            System.out.println("3. 수강생의 특정 과목 회차별 등급 조회");*/
+            System.out.println("3. 수강생의 특정 과목 회차별 등급 조회");
             System.out.println("4. 회차 및 점수 등록");
             System.out.println("5. 모든 점수 조회");
             System.out.println("6. 회차별 점수 조회");
@@ -391,13 +391,70 @@ public class CampManagementApplication {
         return sc.next();
     }
 
+    private static List<Student> getStudentListByName() {
+        while(true) {
+            System.out.print("\n관리할 수강생의 이름을 입력하시오...(종료는 0)\n입력 : ");
+            String name = sc.next();
+
+            if(name.equals("0")) {
+                return null;
+            }
+
+            List<Student> result = StudentData.findStudentByName(name);
+
+            if (result == null || result.isEmpty()) {
+                System.out.println(name + " 이름을 가진 수강생이 존재하지 않습니다. 다시 입력해주세요.");
+                continue;
+            }
+
+            return result;
+        }
+    }
+
+    private static void printStudentList(List<Student> studentList) {
+        int index = 1;
+
+        System.out.println();
+
+        for(Student s : studentList) {
+            System.out.println(index++ + ". " + s.toString() + "\n");
+        }
+    }
+
+    private static Student selectStudent(List<Student> studentList) {
+        printStudentList(studentList);
+
+        while(true) {
+            try {
+                System.out.print("관리할 수강생의 번호를 선택하시오...(종료는 0)\n입력 : ");
+                int index = sc.nextInt();
+
+                if(index == 0) {
+                    return null;
+                }
+
+                return studentList.get(index - 1);
+            } catch (Exception e) {
+                System.out.println("잘못된 입력입니다. 다시 입력해주세요.");
+            }
+        }
+    }
+
     // 수강생의 과목별 시험 회차 및 점수 등록
     private static void createScore() {
-        String studentId = getStudentId(); // 관리할 수강생 고유 번호
         System.out.println("시험 점수를 등록합니다...");
         // 기능 구현
         // 특정 학생의 특정 과목에 대한 점수(회차, 점수값)을 추가하는 메소드
         // 1. 추가할 학생의 이름을 입력받아 해당 이름 학생들의 리스트를 받고 학생을 선택
+        List<Student> studentList = getStudentListByName();
+        if(studentList == null) {
+            return;
+        }
+
+        Student student = selectStudent(studentList);
+        if(student == null) {
+            return;
+        }
 
         // 2. 해당 학생의 과목 리스트(필수, 선택)들을 받고 추가할 과목을 선택
 
