@@ -1,6 +1,7 @@
 import java.util.HashMap;
 import java.util.Map;
 
+// start
 public class Score {
     private String scoreId;
     private int scoreIndex;

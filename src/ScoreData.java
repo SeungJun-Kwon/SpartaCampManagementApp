@@ -95,17 +95,26 @@ public class ScoreData {
     }
 
     // 요구사항 3. 수강생의 특정 과목 회차별 등급을 조회
-    public static String gradeCheck(int scoreIndex){
+    public static String mandatoryGradeCheck(int scoreIndex){
 
         for(Score s : scoreStore.values()){
             if(s.getScoreIndex() == scoreIndex){
-               return essentialGrade(s.getScoreValue());
+               return mandatoryGrade(s.getScoreValue());
+            }
+        }
+        return "등록되지 않았습니다.";
+    }
+    public static String choiceGradeCheck(int scoreIndex){
+
+        for(Score s : scoreStore.values()){
+            if(s.getScoreIndex() == scoreIndex){
+                return choiceGrade(s.getScoreValue());
             }
         }
         return "등록되지 않았습니다.";
     }
 
-    public static String essentialGrade(int score) { // 필수과목 등급
+    public static String mandatoryGrade(int score) { // 필수과목 등급
         String s = "";
         if ((score >= 95) && (score <= 100)) {
             s = "A";
@@ -122,7 +131,7 @@ public class ScoreData {
         }
         return s;
     }
-    public static String choicelGrade(int score) { // 선택과목 등급
+    public static String choiceGrade(int score) { // 선택과목 등급
         String s = "";
         if ((score >= 90) && (score <= 100)){
             s = "A";
