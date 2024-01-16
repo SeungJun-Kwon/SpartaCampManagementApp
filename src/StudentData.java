@@ -11,6 +11,19 @@ public class StudentData {
     private static int studentIndex;
     private static final String INDEX_TYPE_STUDENT = "ST";
 
+    public static void Init() {
+        Student student1 = new Student(getNewUID(), "권승준",
+                new ArrayList<>(List.of("SU0", "SU1", "SU2")), new ArrayList<>(List.of("SU5", "SU6")));
+        Student student2 = new Student(getNewUID(), "박태준",
+                new ArrayList<>(List.of("SU0", "SU2", "SU4")), new ArrayList<>(List.of("SU5", "SU7")));
+        Student student3 = new Student(getNewUID(), "조우석",
+                new ArrayList<>(List.of("SU1", "SU2", "SU3")), new ArrayList<>(List.of("SU6", "SU8")));
+
+        studentStore.put(student1.getStudentId(), student1);
+        studentStore.put(student2.getStudentId(), student2);
+        studentStore.put(student3.getStudentId(), student3);
+    }
+
     public static Map<String, Student> getStudentStore() {
         return studentStore;
     }
