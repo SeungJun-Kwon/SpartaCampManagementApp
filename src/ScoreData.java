@@ -1,6 +1,7 @@
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 public class ScoreData {
     private static final String INDEX_TYPE_SCORE = "SC";
@@ -150,7 +151,7 @@ public class ScoreData {
     }
 
     public static double getAverageScoreByScoreIds(List<String> ids) {
-        return ids.stream().map(ScoreData::getScoreByID).mapToInt(Score::getScoreValue).average().orElse(0D);
+        return ids.stream().map(ScoreData::getScoreByID).filter(Objects::nonNull).mapToInt(Score::getScoreValue).average().orElse(0D);
     }
 
     public static double calculateAverageScore(List<Score> scores) {

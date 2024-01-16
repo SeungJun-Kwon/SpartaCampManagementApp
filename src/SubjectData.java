@@ -44,25 +44,26 @@ public class SubjectData {
         return subjectStore;
     }
 
-    public static List<Subject> getMandatorySubjects(){
-    return subjectStore.stream().filter(s -> s.getSubjectType().equals(SUBJECT_TYPE_MANDATORY)).toList();
-  }
-  public static List<Subject> getChoiceSubjects(){
-    return subjectStore.stream().filter(s -> s.getSubjectType().equals(SUBJECT_TYPE_MANDATORY)).toList();
-  }
+    public static List<Subject> getMandatorySubjects() {
+        return subjectStore.stream().filter(s -> s.getSubjectType().equals(SUBJECT_TYPE_MANDATORY)).toList();
+    }
 
-  public static Subject findSubjectById(String id) {
-      return subjectStore.stream().filter(subject -> Objects.equals(id, subject.getSubjectId())).findFirst().orElse(null);
+    public static List<Subject> getChoiceSubjects() {
+        return subjectStore.stream().filter(s -> s.getSubjectType().equals(SUBJECT_TYPE_MANDATORY)).toList();
+    }
+
+    public static Subject findSubjectById(String id) {
+        return subjectStore.stream().filter(subject -> Objects.equals(id, subject.getSubjectId())).findFirst().orElse(null);
     }
 
     public static void deleteSubject(Subject subject) {
         subjectStore.remove(subject);
     }
 
-  public static Subject getSubjectById(String id){
-    return subjectStore.stream()
-            .filter(s -> Objects.equals(s.getSubjectId(), id))
-            .findFirst()
-            .orElseThrow(() -> new IllegalArgumentException("SubjectData Dont Have" + id));
-  }
+    public static Subject getSubjectById(String id) {
+        return subjectStore.stream()
+                .filter(s -> Objects.equals(s.getSubjectId(), id))
+                .findFirst()
+                .orElseThrow(() -> new IllegalArgumentException("SubjectData Dont Have" + id));
+    }
 }

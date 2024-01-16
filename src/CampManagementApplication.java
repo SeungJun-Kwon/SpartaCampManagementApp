@@ -1,5 +1,6 @@
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.Scanner;
 import java.util.stream.IntStream;
 
@@ -190,6 +191,7 @@ public class CampManagementApplication {
         List<Student> students = StudentData.getSortedStudentStore();
         for (Student s : students) {
             System.out.println(s.toString());
+            System.out.println();
         }
 
         System.out.println("\n수강생 목록 조회 성공!\n");
@@ -233,7 +235,7 @@ public class CampManagementApplication {
 
         Student student = selectStudent(getStudentListByName());
 
-        if(student == null)
+        if (student == null)
             return;
 
         while (true) {
@@ -333,7 +335,7 @@ public class CampManagementApplication {
     private static void printStudentList(List<Student> studentList) {
         int index = 1;
 
-        if(studentList == null || studentList.isEmpty())
+        if (studentList == null || studentList.isEmpty())
             return;
 
         System.out.println();
@@ -347,7 +349,7 @@ public class CampManagementApplication {
     private static Student selectStudent(List<Student> studentList) {
         printStudentList(studentList);
 
-        if(studentList == null || studentList.isEmpty())
+        if (studentList == null || studentList.isEmpty())
             return null;
 
         while (true) {
@@ -546,77 +548,96 @@ public class CampManagementApplication {
         int index = 1;
 
         System.out.println("[ 필수과목 ] ");
-        for(String s : student.getMandatorySubjectList()){
+        for (String s : student.getMandatorySubjectList()) {
             System.out.println(index++ + ". " + SubjectData.findSubjectById(s).getSubjectName());
         }
         System.out.println("\n[ 선택과목 ] ");
-        for(String s : student.getChoiceSubjectList()){
+        for (String s : student.getChoiceSubjectList()) {
             System.out.println(index++ + ". " + SubjectData.findSubjectById(s).getSubjectName());
         }
 
         System.out.print("\n과목을 입력하세요: ");
         int s = sc.nextInt();
-        selectedSubjectId = subjectIdList.get(s-1);
+        selectedSubjectId = subjectIdList.get(s - 1);
         System.out.println();
 
-        while (true){
-            System.out.println("등급 조회를 시작합니다. 종료를 원하시면 0을 입력하세요");
-            System.out.print("조회할 회차를 입력하세요: ");
-            int n = sc.nextInt();
-            if(n == 0) break;
+        List<String> scoreIdList = student.getScoreIdListBySubject(selectedSubjectId);
 
+        for(String scoreId : scoreIdList) {
+            if(scoreId.equals("0"))
+                continue;
+
+            Score score = ScoreData.getScoreByID(scoreId);
+
+            System.out.print(score.getScoreIndex() + "회차 점수 : " + score.getScoreValue() + ", ");
             if (student.getMandatorySubjectList().contains(selectedSubjectId)) {
-                gradeCheckMandatory(n);
-            } else if(student.getChoiceSubjectList().contains(selectedSubjectId)){
-                gradeCheckChoice(n);
+                gradeCheckMandatory(score.getScoreIndex());
+            } else if (student.getChoiceSubjectList().contains(selectedSubjectId)) {
+                gradeCheckChoice(score.getScoreIndex());
             }
         }
     }
+
     private static void gradeCheckMandatory(int n) {
-        System.out.println(n + " 회차의 등급: " + ScoreData.mandatoryGradeCheck(n));
+        System.out.println("등급: " + ScoreData.mandatoryGradeCheck(n));
     }
+
     private static void gradeCheckChoice(int n) {
-        System.out.println(n + " 회차의 등급: " + ScoreData.choiceGradeCheck(n));
+        System.out.println("등급: " + ScoreData.choiceGradeCheck(n));
     }
 
-private static void inquireAverageScoreBySubjectForStudent() {
-    try {
-        // * 학생 이름 입력
-        List<Student> students = StudentData.findStudentByName(sc.nextLine().strip());
-        if (students.isEmpty()) {
-            System.out.println("** 해당 학생이 존재하지 않습니다. **");
-        }
+    private static void inquireAverageScoreBySubjectForStudent() {
+        try {
+            // * 학생 이름 입력
+            List<Student> students = getStudentListByName();
+            if (students == null || students.isEmpty()) {
+                System.out.println("** 해당 학생이 존재하지 않습니다. **");
+            }
 
-        // * 수강중인 과목의 목록
-        for (Student s : students) {
-            System.out.format("%s님의 평균 점수입니다.%n", s.getStudentName());
-            System.out.println("\n [ 필수 과목 ] ");
-            s.getMandatorySubjectList().forEach(sbId -> {
-                List<String> scoreIdList = s.getScoreIdListBySubject(sbId);
-                double averageScore = ScoreData.getAverageScoreByScoreIds(scoreIdList);
-                System.out.format("[ %s ]: %.2g -- %d회차%n",
-                        SubjectData.getSubjectById(sbId).getSubjectName(),
-                        averageScore,
-                        scoreIdList.size());
-            });
+            // * 수강중인 과목의 목록
+            for (Student s : students) {
+                int scoreIndexCnt = 0;
+                System.out.format("%s님의 평균 점수입니다.%n", s.getStudentName());
+                System.out.println("\n[ 필수 과목 ] ");
+                for (String string : s.getMandatorySubjectList()) {
+                    scoreIndexCnt = 0;
+                    List<String> scoreIdList = s.getScoreIdListBySubject(string);
+                    for (String scoreId : scoreIdList) {
+                        if (!scoreId.equals("0"))
+                            scoreIndexCnt++;
+                    }
 
-            System.out.println("\n [ 선택 과목 ] ");
-            s.getChoiceSubjectList().forEach(sbId -> {
-                List<String> scoreIdList = s.getScoreIdListBySubject(sbId);
-                double averageScore = ScoreData.getAverageScoreByScoreIds(scoreIdList);
-                System.out.format("[ %s ]: %.2g -- 총 %d회%n",
-                        SubjectData.getSubjectById(sbId).getSubjectName(),
-                        averageScore,
-                        scoreIdList.size());
-            });
+                    double averageScore = ScoreData.getAverageScoreByScoreIds(scoreIdList);
+                    System.out.format("[ %s ]: %.2g -- 총 %d회차%n",
+                            SubjectData.getSubjectById(string).getSubjectName(),
+                            averageScore,
+                            scoreIndexCnt);
+                }
+
+                System.out.println("\n[ 선택 과목 ] ");
+                for (String sbId : s.getChoiceSubjectList()) {
+                    scoreIndexCnt = 0;
+                    List<String> scoreIdList = s.getScoreIdListBySubject(sbId);
+                    for (String scoreId : scoreIdList) {
+                        if (!scoreId.equals("0"))
+                            scoreIndexCnt++;
+                    }
+
+                    double averageScore = ScoreData.getAverageScoreByScoreIds(scoreIdList);
+                    System.out.format("[ %s ]: %.2g -- 총 %d회%n",
+                            SubjectData.getSubjectById(sbId).getSubjectName(),
+                            averageScore,
+                            scoreIndexCnt);
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
-    } catch (Exception e) {
-        e.printStackTrace();
     }
-}
 
     private static void inquireAverageMandatoryScoreBySubjectForStudentWithState() {
         try {
+            System.out.print("조회할 학생의 상태를 입력하시오...");
             String studentState = sc.next().strip();
             List<Student> students = StudentData.findStudentByState(studentState);
             if (students.isEmpty()) {
@@ -624,185 +645,188 @@ private static void inquireAverageScoreBySubjectForStudent() {
                 return;
             }
 
-        System.out.format("%n%s인 학생들의 과목별 평균 점수%n", students);
-        System.out.println("[ 필수 과목 ]");
-        SubjectData.getMandatorySubjects().forEach(sb -> {
-            ArrayList<String> allSubjectScoreIds = new ArrayList<>();
-            students.stream()
-                    .map(st -> st.getScoreIdListBySubject(sb.getSubjectId()))
-                    .forEach(allSubjectScoreIds::addAll);
-            System.out.format("%s: %.2f%n", sb.getSubjectName(), ScoreData.getAverageScoreByScoreIds(allSubjectScoreIds));
-        });
+            System.out.format("%n%s인 학생들의 과목별 평균 점수%n%n", studentState);
+            System.out.println("[ 필수 과목 ]");
+            SubjectData.getMandatorySubjects().forEach(sb -> {
+                ArrayList<String> allSubjectScoreIds = new ArrayList<>();
+                students.stream()
+                        .map(st -> st.getScoreIdListBySubject(sb.getSubjectId()))
+                        .filter(Objects::nonNull)
+                        .forEach(allSubjectScoreIds::addAll);
+                System.out.format("%s: %.2f%n", sb.getSubjectName(), ScoreData.getAverageScoreByScoreIds(allSubjectScoreIds));
+            });
+            System.out.println();
 
-        System.out.println("[ 선택 과목 ]");
-        SubjectData.getChoiceSubjects().forEach(sb -> {
-            ArrayList<String> allSubjectScoreIds = new ArrayList<>();
-            students.stream()
-                    .map(st -> st.getScoreIdListBySubject(sb.getSubjectId()))
-                    .forEach(allSubjectScoreIds::addAll);
-            System.out.format("%s: %.2f%n", sb.getSubjectName(), ScoreData.getAverageScoreByScoreIds(allSubjectScoreIds));
-        });
-    } catch (Exception e) {
-        e.printStackTrace();
-    }
-}
-
-
-/*
-과목 관리 화면
- */
-private static void displaySubjectView() {
-    boolean flag = true;
-    while (flag) {
-        System.out.println("==================================");
-        System.out.println("과목 관리 실행 중...");
-        System.out.println("0. 메인 화면 이동");
-        System.out.println("1. 전체 과목 리스트 조회");
-        System.out.println("2. 과목 추가");
-        System.out.println("3. 과목 수정");
-        System.out.println("4. 과목 삭제");
-        System.out.print("관리 항목을 선택하세요...");
-        int input = sc.nextInt();
-
-        switch (input) {
-            case 0 -> flag = false; // 메인 화면 이동
-            case 1 -> viewAllSubject(); // 수강생의 과목별 시험 회차 및 점수 등록
-            case 2 -> createSubject(); // 수강생의 과목별 시험 회차 및 점수 등록
-            case 3 -> updateSubjectById(); // 수강생의 과목별 시험 회차 및 점수 등록
-            case 4 -> deleteSubjectById();
-            default -> {
-                System.out.println("잘못된 입력입니다.\n메인 화면 이동...");
-                flag = false;
-            }
-        }
-    }
-}
-
-private static void viewAllSubject() {
-    for (Subject s : SubjectData.getSubjectStore()) {
-        System.out.format("[%s] | %s - %s%n", s.getSubjectId(), s.getSubjectName(), s.getSubjectType());
-    }
-}
-
-private static void createSubject() {
-    while (true) {
-        try {
-            // 과목 이름 입력
-            System.out.println("\n과목을 등록합니다...");
-            System.out.print("과목 이름 입력: ");
-            String subjectName = sc.next().strip();
-            // 과목 타입 입력
-            System.out.println("\n과목 타입을 선택 해주세요");
-            System.out.println("1. 필수 과목\t2. 선택 과목");
-            System.out.print("과목 타입 선택: ");
-            int subjectTypeInput = Integer.parseInt(sc.next().strip());
-
-            String subjectType;
-            switch (subjectTypeInput) {
-                case 1 -> subjectType = "MANDATORY";
-                case 2 -> subjectType = "CHOICE";
-                default -> throw new IllegalStateException();
-            }
-
-            // 과목 저장소에 추가
-            Subject subject = new Subject(SubjectData.getNewId(), subjectName, subjectType);
-
-            // 결과
-            if (SubjectData.addSubject(subject)) {
-                System.out.println("과목 등록 성공!\n");
-            } else {
-                System.out.println("과목 등록 실패!\n");
-            }
-            break;
+            System.out.println("[ 선택 과목 ]");
+            SubjectData.getChoiceSubjects().forEach(sb -> {
+                ArrayList<String> allSubjectScoreIds = new ArrayList<>();
+                students.stream()
+                        .map(st -> st.getScoreIdListBySubject(sb.getSubjectId()))
+                        .filter(Objects::nonNull)
+                        .forEach(allSubjectScoreIds::addAll);
+                System.out.format("%s: %.2f%n", sb.getSubjectName(), ScoreData.getAverageScoreByScoreIds(allSubjectScoreIds));
+            });
         } catch (Exception e) {
-            System.out.println("\n** 잘못된 입력입니다! 다시 입력해주세요. **\n");
+            e.printStackTrace();
         }
     }
-}
 
-private static void updateSubjectById() {
-    // 수정할 과목 코드
-    System.out.println("\n과목을 수정합니다...");
-    System.out.print("과목 코드 입력: ");
-    String inputSubjectId = sc.next().strip();
-    Subject subject = SubjectData.findSubjectById(inputSubjectId);
 
-    if (subject == null) {
-        System.out.println("과목이 존재하지 않습니다.");
-    } else {
-        // 수강 중인 학생 확인
-        List<Student> enrolledStudents = StudentData.findStudentBySubjectName(subject.getSubjectName());
-        boolean hasEnrolledStudent = !enrolledStudents.isEmpty();
-        if (hasEnrolledStudent) {
-            System.out.println("해당 과목을 수강중인 학생이 존재합니다.");
-            enrolledStudents.forEach(s -> System.out.print(s.getStudentName() + ' '));
-            System.out.println("과목의 이름만 수정 가능합니다...");
-        }
+    /*
+    과목 관리 화면
+     */
+    private static void displaySubjectView() {
+        boolean flag = true;
+        while (flag) {
+            System.out.println("==================================");
+            System.out.println("과목 관리 실행 중...");
+            System.out.println("0. 메인 화면 이동");
+            System.out.println("1. 전체 과목 리스트 조회");
+            System.out.println("2. 과목 추가");
+            System.out.println("3. 과목 수정");
+            System.out.println("4. 과목 삭제");
+            System.out.print("관리 항목을 선택하세요...");
+            int input = sc.nextInt();
 
-        // 과목 이름 입력
-        System.out.format("%n[%s] | %s - %s%n", subject.getSubjectId(), subject.getSubjectName(), subject.getSubjectType());
-        System.out.println("\n과목 이름을 수정합니다...");
-        System.out.print("과목 이름 입력: ");
-        String subjectNameInput = sc.next().strip();
-        // 과목 타입 입력
-        String subjectType = null;
-        if (!hasEnrolledStudent) {
-            System.out.format("%n[%s] | %s - %s%n", subject.getSubjectId(), subjectNameInput, subject.getSubjectType());
-            System.out.println("\n과목 타입을 수정합니다...");
-            System.out.println("1. 필수 과목\t2. 선택 과목");
-            System.out.print("과목 타입 선택: ");
-            int subjectTypeInput = sc.nextInt();
-
-            switch (subjectTypeInput) {
-                case 1 -> subjectType = "MANDATORY";
-                case 2 -> subjectType = "CHOICE";
-                default -> throw new IllegalStateException();
+            switch (input) {
+                case 0 -> flag = false; // 메인 화면 이동
+                case 1 -> viewAllSubject(); // 수강생의 과목별 시험 회차 및 점수 등록
+                case 2 -> createSubject(); // 수강생의 과목별 시험 회차 및 점수 등록
+                case 3 -> updateSubjectById(); // 수강생의 과목별 시험 회차 및 점수 등록
+                case 4 -> deleteSubjectById();
+                default -> {
+                    System.out.println("잘못된 입력입니다.\n메인 화면 이동...");
+                    flag = false;
+                }
             }
         }
-
-        // 과목 수정
-        subject.setSubjectName(subjectNameInput);
-        if (!hasEnrolledStudent) {
-            subject.setSubjectType(subjectType);
-        }
-
-        // 결과
-        System.out.println("과목 수정 성공!\n");
-        System.out.format("%n[%s] | %s - %s%n", subject.getSubjectId(), subject.getSubjectName(), subject.getSubjectType());
     }
-}
 
-private static void deleteSubjectById() {
-    // 삭제할 과목 코드
-    while (true) {
-        try {
-            System.out.println("\n과목을 삭제합니다...");
-            System.out.print("과목 코드 입력: ");
-            String inputSubjectId = sc.next().strip();
-            Subject subject = SubjectData.findSubjectById(inputSubjectId);
+    private static void viewAllSubject() {
+        for (Subject s : SubjectData.getSubjectStore()) {
+            System.out.format("[%s] | %s - %s%n", s.getSubjectId(), s.getSubjectName(), s.getSubjectType());
+        }
+    }
 
-            // 과목 존재하는지 확인
-            if (subject == null) {
-                System.out.println("과목이 존재하지 않습니다.");
+    private static void createSubject() {
+        while (true) {
+            try {
+                // 과목 이름 입력
+                System.out.println("\n과목을 등록합니다...");
+                System.out.print("과목 이름 입력: ");
+                String subjectName = sc.next().strip();
+                // 과목 타입 입력
+                System.out.println("\n과목 타입을 선택 해주세요");
+                System.out.println("1. 필수 과목\t2. 선택 과목");
+                System.out.print("과목 타입 선택: ");
+                int subjectTypeInput = Integer.parseInt(sc.next().strip());
+
+                String subjectType;
+                switch (subjectTypeInput) {
+                    case 1 -> subjectType = "MANDATORY";
+                    case 2 -> subjectType = "CHOICE";
+                    default -> throw new IllegalStateException();
+                }
+
+                // 과목 저장소에 추가
+                Subject subject = new Subject(SubjectData.getNewId(), subjectName, subjectType);
+
+                // 결과
+                if (SubjectData.addSubject(subject)) {
+                    System.out.println("과목 등록 성공!\n");
+                } else {
+                    System.out.println("과목 등록 실패!\n");
+                }
                 break;
+            } catch (Exception e) {
+                System.out.println("\n** 잘못된 입력입니다! 다시 입력해주세요. **\n");
             }
-            // 수강 중인 학생이 없는지 확인
+        }
+    }
+
+    private static void updateSubjectById() {
+        // 수정할 과목 코드
+        System.out.println("\n과목을 수정합니다...");
+        System.out.print("과목 코드 입력: ");
+        String inputSubjectId = sc.next().strip();
+        Subject subject = SubjectData.findSubjectById(inputSubjectId);
+
+        if (subject == null) {
+            System.out.println("과목이 존재하지 않습니다.");
+        } else {
+            // 수강 중인 학생 확인
             List<Student> enrolledStudents = StudentData.findStudentBySubjectName(subject.getSubjectName());
-            if (!enrolledStudents.isEmpty()) {
+            boolean hasEnrolledStudent = !enrolledStudents.isEmpty();
+            if (hasEnrolledStudent) {
                 System.out.println("해당 과목을 수강중인 학생이 존재합니다.");
                 enrolledStudents.forEach(s -> System.out.print(s.getStudentName() + ' '));
-                break;
+                System.out.println("과목의 이름만 수정 가능합니다...");
             }
-            // 삭제
-            SubjectData.deleteSubject(subject);
-            System.out.println("과목 삭제 성공.");
-            break;
 
+            // 과목 이름 입력
+            System.out.format("%n[%s] | %s - %s%n", subject.getSubjectId(), subject.getSubjectName(), subject.getSubjectType());
+            System.out.println("\n과목 이름을 수정합니다...");
+            System.out.print("과목 이름 입력: ");
+            String subjectNameInput = sc.next().strip();
+            // 과목 타입 입력
+            String subjectType = null;
+            if (!hasEnrolledStudent) {
+                System.out.format("%n[%s] | %s - %s%n", subject.getSubjectId(), subjectNameInput, subject.getSubjectType());
+                System.out.println("\n과목 타입을 수정합니다...");
+                System.out.println("1. 필수 과목\t2. 선택 과목");
+                System.out.print("과목 타입 선택: ");
+                int subjectTypeInput = sc.nextInt();
 
-        } catch (Exception e) {
-            System.out.println("과목 삭제 실패.");
+                switch (subjectTypeInput) {
+                    case 1 -> subjectType = "MANDATORY";
+                    case 2 -> subjectType = "CHOICE";
+                    default -> throw new IllegalStateException();
+                }
+            }
+
+            // 과목 수정
+            subject.setSubjectName(subjectNameInput);
+            if (!hasEnrolledStudent) {
+                subject.setSubjectType(subjectType);
+            }
+
+            // 결과
+            System.out.println("과목 수정 성공!\n");
+            System.out.format("%n[%s] | %s - %s%n", subject.getSubjectId(), subject.getSubjectName(), subject.getSubjectType());
         }
     }
-}
+
+    private static void deleteSubjectById() {
+        // 삭제할 과목 코드
+        while (true) {
+            try {
+                System.out.println("\n과목을 삭제합니다...");
+                System.out.print("과목 코드 입력: ");
+                String inputSubjectId = sc.next().strip();
+                Subject subject = SubjectData.findSubjectById(inputSubjectId);
+
+                // 과목 존재하는지 확인
+                if (subject == null) {
+                    System.out.println("과목이 존재하지 않습니다.");
+                    break;
+                }
+                // 수강 중인 학생이 없는지 확인
+                List<Student> enrolledStudents = StudentData.findStudentBySubjectName(subject.getSubjectName());
+                if (!enrolledStudents.isEmpty()) {
+                    System.out.println("해당 과목을 수강중인 학생이 존재합니다.");
+                    enrolledStudents.forEach(s -> System.out.print(s.getStudentName() + ' '));
+                    break;
+                }
+                // 삭제
+                SubjectData.deleteSubject(subject);
+                System.out.println("과목 삭제 성공.");
+                break;
+
+
+            } catch (Exception e) {
+                System.out.println("과목 삭제 실패.");
+            }
+        }
+    }
 }
 

@@ -110,7 +110,7 @@ public class Student {
 
     @Override
     public String toString() {
-        return studentId + " : " + studentName + ",\n" +
+        return studentId + " : " + studentName + "\n" +
                 "필수 과목 " + mandatorySubjectList +
                 "\n선택 과목 " + choiceSubjectList +
                 "\n현재 상태 " + studentState;
