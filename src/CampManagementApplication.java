@@ -16,7 +16,6 @@ public class CampManagementApplication {
         try {
             displayMainView();
         } catch (Exception e) {
-            System.out.println(e.getCause() + " " + e.getMessage() + " " + e);
             System.out.println("\n오류 발생!\n프로그램을 종료합니다.");
         }
     }
@@ -306,7 +305,6 @@ public class CampManagementApplication {
             System.out.println("6. 회차별 점수 조회");
             System.out.println("7. 점수 수정");
             System.out.println("8. 등급 조회");
-            System.out.println("9. 전체 학생의 전체 점수 조회");
             System.out.print("관리 항목을 선택하세요...");
             int input = sc.nextInt();
 
@@ -320,39 +318,10 @@ public class CampManagementApplication {
                 case 6 -> getScoreByIndex(); // 회차별 점수 조회
                 case 7 -> uppdateScore(); // 점수 수정
                 case 8 -> gradeCheckRe(); // 등급 조회
-                case 9 -> inquireAllStudentsScore();
                 default -> {
                     System.out.println("잘못된 입력입니다.\n메인 화면 이동...");
                     flag = false;
                 }
-            }
-        }
-    }
-
-    // 테스트용. 모든 수강생들의 모든 점수 정보를 출력하는 메소드
-    private static void inquireAllStudentsScore() {
-        List<Student> studentList = StudentData.getSortedStudentStore();
-
-        for(Student student : studentList) {
-            System.out.println("\n[ " + student.getStudentName() + " ] 점수 정보\n");
-            List<String> subjectList = new ArrayList<>();
-            subjectList.addAll(student.getMandatorySubjectList());
-            subjectList.addAll(student.getChoiceSubjectList());
-
-            for(String subjectId : subjectList) {
-                String subjectName = SubjectData.findSubjectById(subjectId).getSubjectName();
-                System.out.println("\"" + subjectName + "\"");
-                List<String> scoreList = student.getScoreIdListBySubject(subjectId);
-                for(String scoreId : scoreList) {
-                    Score score = ScoreData.getScoreByID(scoreId);
-                    if(score == null || score.getScoreId().equals("0")) {
-                        continue;
-                    }
-
-                    System.out.print(score.getScoreIndex() + " : " + score.getScoreValue() + " | ");
-                }
-
-                System.out.println();
             }
         }
     }
