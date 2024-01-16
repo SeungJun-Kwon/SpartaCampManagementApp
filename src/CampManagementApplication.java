@@ -17,7 +17,6 @@ public class CampManagementApplication {
         try {
             displayMainView();
         } catch (Exception e) {
-            System.out.println(e.getCause() + " " + e.getMessage() + " " + e);
             System.out.println("\n오류 발생!\n프로그램을 종료합니다.");
         }
     }
