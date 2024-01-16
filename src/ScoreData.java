@@ -36,7 +36,7 @@ public class ScoreData {
         }
 
         // 점수 0~100
-        if(!(score.getScoreValue() >= 0 && score.getScoreValue() <= 100)){
+        if (!(score.getScoreValue() >= 0 && score.getScoreValue() <= 100)){
             return false;
         }
 
@@ -53,7 +53,7 @@ public class ScoreData {
         Score target = null;
 
         for (Score s: scoreStore.values()){
-            if(s.getScoreIndex() == index){
+            if (s.getScoreIndex() == index){
                 target = s;
                 break;
             }
@@ -110,5 +110,13 @@ public class ScoreData {
             s = "N";
         }
         return s;
+    }
+
+    public static double getAverageScoreByScoreIds(List<String> ids) {
+        return ids.stream().map(ScoreData::getScoreById).mapToInt(Score::getScoreValue).average().orElse(0D);
+    }
+
+    public static double calculateAverageScore(List<Score> scores) {
+        return scores.stream().mapToInt(Score::getScoreValue).average().orElse(0F);
     }
 }
