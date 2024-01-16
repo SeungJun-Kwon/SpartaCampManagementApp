@@ -1,6 +1,7 @@
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
+import java.util.stream.IntStream;
 
 /**
  * Notification Java, 객체지향이 아직 익숙하지 않은 분들은 위한 소스코드 틀입니다. main 메서드를 실행하면 프로그램이 실행됩니다. model 의 클래스들과 아래 (// 기능 구현...) 주석 부분을 완성해주세요! 프로젝트 구조를 변경하거나 기능을
@@ -334,9 +335,6 @@ public class CampManagementApplication {
                 case 6 -> getScoreByIndex(); // 회차별 점수 조회
                 case 7 -> uppdateScore(); // 점수 수정
                 case 8 -> gradeCheckRe(); // 등급 조회
-                case 9 -> inquireAllStudentsScore();
-                case 10 -> inquireAverageScoreBySubjectForStudent();
-                case 11 -> inquireAverageMandatoryScoreBySubjectForStudentWithState();
                 default -> {
                     System.out.println("잘못된 입력입니다.\n메인 화면 이동...");
                     flag = false;
