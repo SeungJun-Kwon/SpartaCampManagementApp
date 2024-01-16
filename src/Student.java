@@ -71,6 +71,10 @@ public class Student {
         return choiceSubjectList;
     }
 
+    public Map<String, List<String>> getScoreBySubject() {
+        return scoreBySubject;
+    }
+
     public void addMandatorySubject(String subject) {
         if(mandatorySubjectList.contains(subject)) {
             // 메세지
@@ -112,6 +116,14 @@ public class Student {
         }
 
         return false;
+    }
+
+    public void removeScoreBySubject(String subjectId, int scoreIndex) {
+        if(scoreBySubject.containsKey(subjectId)) {
+            if(!scoreBySubject.get(subjectId).get(scoreIndex).equals(("0"))) {
+                scoreBySubject.get(subjectId).set(scoreIndex, "0");
+            }
+        }
     }
 
     @Override

@@ -325,6 +325,7 @@ public class CampManagementApplication {
             }
         }
     }
+
     private static void addScore() {
         // 점수 정보를 입력받고 Data에 추가하는 메소드
         // 1. 회차와 점수 값을 입력받는다
@@ -338,10 +339,9 @@ public class CampManagementApplication {
         System.out.println(score.getScoreIndex() + " 회차 " + score.getScoreValue() + "점");
 
         // 3. 방금 만든 Score를 ScoreData에 추가 시도한다
-        if(ScoreData.addScore(score)) {
+        if (ScoreData.addScore(score)) {
             System.out.println("점수 추가가 완료됐습니다!");
-        }
-        else {
+        } else {
             System.out.println("점수 추가가 실패했습니다");
         }
     }
@@ -350,7 +350,7 @@ public class CampManagementApplication {
         // 모든 점수의 정보를 출력하는 메소드
         List<Score> scoreList = ScoreData.getScoreList();
 
-        for(Score s : scoreList) {
+        for (Score s : scoreList) {
             System.out.println(s.getScoreIndex() + "회차 점수 : " + s.getScoreValue());
         }
         System.out.println("\n점수 조회 완료\n");
@@ -366,21 +366,23 @@ public class CampManagementApplication {
         List<Score> li;
         li = ScoreData.getScoreByIndex(a);
 
-        for(int i = 0; i < li.size(); i++) {
+        for (int i = 0; i < li.size(); i++) {
             Score score = li.get(i);
             System.out.println(a + "회차 점수 : " + score.getScoreValue());
         }
     }
+
     // 점수 수정 메서드
-    private static void uppdateScore(){
+    private static void uppdateScore() {
         System.out.print("수정할 회차를 입력하세요: ");
         int n = sc.nextInt();
         System.out.print("새로운 점수를 입력하세요: ");
         int s = sc.nextInt();
         ScoreData.updateScore(n, s);
     }
+
     // 등급 조회 메서드
-    private static void gradeCheckRe(){
+    private static void gradeCheckRe() {
         System.out.print("조회할 회차를 입력하세요: ");
         int n = sc.nextInt();
         System.out.println(n + " 회차의 등급: " + ScoreData.gradeCheck(n));
@@ -391,12 +393,13 @@ public class CampManagementApplication {
         return sc.next();
     }
 
+    // 수강생의 이름을 입력받아 수강생의 리스트를 가져오는 메소드
     private static List<Student> getStudentListByName() {
-        while(true) {
+        while (true) {
             System.out.print("\n관리할 수강생의 이름을 입력하시오...(종료는 0)\n입력 : ");
             String name = sc.next();
 
-            if(name.equals("0")) {
+            if (name.equals("0")) {
                 return null;
             }
 
@@ -411,25 +414,27 @@ public class CampManagementApplication {
         }
     }
 
+    // 수강생의 리스트를 화면에 출력해주는 메소드
     private static void printStudentList(List<Student> studentList) {
         int index = 1;
 
         System.out.println();
 
-        for(Student s : studentList) {
+        for (Student s : studentList) {
             System.out.println(index++ + ". " + s.toString() + "\n");
         }
     }
 
+    // 수강생의 리스트들을 출력하고 그 중에서 수강생을 선택해 반환하는 메소드
     private static Student selectStudent(List<Student> studentList) {
         printStudentList(studentList);
 
-        while(true) {
+        while (true) {
             try {
                 System.out.print("관리할 수강생의 번호를 선택하시오...(종료는 0)\n입력 : ");
                 int index = sc.nextInt();
 
-                if(index == 0) {
+                if (index == 0) {
                     return null;
                 }
 
@@ -447,77 +452,90 @@ public class CampManagementApplication {
         // 특정 학생의 특정 과목에 대한 점수(회차, 점수값)을 추가하는 메소드
         // 1. 추가할 학생의 이름을 입력받아 해당 이름 학생들의 리스트를 받고 학생을 선택
         List<Student> studentList = getStudentListByName();
-        if(studentList == null) {
+        if (studentList == null) {
             return;
         }
 
         Student student = selectStudent(studentList);
-        if(student == null) {
+        if (student == null) {
             return;
         }
 
         // 2. 해당 학생의 과목 리스트(필수, 선택)들을 받고 추가할 과목을 선택
         String selectedSubjectId;
-        List<String> subjectIdList = new ArrayList<>(student.getMandatorySubjectList());
+        List<String> subjectIdList = new ArrayList<>();
+        subjectIdList.addAll(student.getMandatorySubjectList());
         subjectIdList.addAll(student.getChoiceSubjectList());
 
-        int index = 1;
-        for(String s : subjectIdList) {
-            System.out.println(index++ + ". " + SubjectData.findSubjectById(s).getSubjectName());
-        }
+        // 한 학생에 대한 점수 추가 작업을 반복해서 할 수 있도록 while 문 안에서 처리
+        while (true) {
+            System.out.println();
 
-        System.out.println();
+            int index = 1;
+            for (String s : subjectIdList) {
+                System.out.println(index++ + ". " + SubjectData.findSubjectById(s).getSubjectName());
+            }
 
-        while(true) {
-            try {
-                System.out.println("수정할 과목의 종류를 입력하시오...(종료는 0)\n입력 : ");
-                index = sc.nextInt();
+            System.out.println();
 
-                if(index == 0) {
-                    return;
+            while (true) {
+                try {
+                    System.out.print("수정할 과목의 번호를 입력하시오...(종료는 0)\n입력 : ");
+                    index = sc.nextInt();
+
+                    if (index == 0) {
+                        return;
+                    }
+
+                    if (index > subjectIdList.size()) {
+                        throw new Exception();
+                    }
+
+                    selectedSubjectId = subjectIdList.get(index - 1);
+
+                    break;
+                } catch (Exception e) {
+                    System.out.println("잘못된 입력입니다. 다시 입력해주세요.\n");
                 }
+            }
 
-                if(index > studentList.size()) {
-                    throw new Exception();
+            // 3. 점수의 회차와 점수값을 입력
+            int scoreIndex, scoreValue;
+            while (true) {
+                System.out.print("[ " + SubjectData.findSubjectById(selectedSubjectId).getSubjectName() + " ]");
+                System.out.println(" 과목의 회차와 점수를 입력하시오...(종료는 0)");
+                try {
+                    System.out.print("회차 : ");
+                    scoreIndex = sc.nextInt();
+
+                    if (scoreIndex == 0) {
+                        return;
+                    }
+
+                    System.out.print("점수 : ");
+                    scoreValue = sc.nextInt();
+
+                    if (scoreValue == 0) {
+                        return;
+                    }
+
+                    break;
+                } catch (Exception e) {
+                    System.out.println("잘못된 입력입니다. 다시 입력해주세요.\n");
                 }
+            }
 
-                selectedSubjectId = subjectIdList.get(index - 1);
-                break;
-            } catch (Exception e) {
-                System.out.println("잘못된 입력입니다. 다시 입력해주세요.\n");
+            // 4. 각 클래스에서 구현한 메소드들(get 메소드, add 메소드 등)을 통해 추가 시도
+            Score score = new Score(ScoreData.getNewUID(), scoreIndex, scoreValue);
+            if (student.addScoreBySubject(selectedSubjectId, score) && ScoreData.addScore(score)) {
+                System.out.println("\n점수 등록 성공!");
+            }
+            else {
+                System.out.println("\n점수 등록 실패(이미 존재하는 회차이거나 학생이 수강하지 않는 과목)");
+                student.removeScoreBySubject(selectedSubjectId, score.getScoreIndex());
+                ScoreData.removeScore(score.getScoreId());
             }
         }
-
-        // 3. 점수의 회차와 점수값을 입력
-        int scoreIndex, scoreValue;
-        while(true) {
-            System.out.print("[ " + SubjectData.findSubjectById(selectedSubjectId).getSubjectName() + " ]");
-            System.out.println(" 과목에 회차와 점수를 입력하시오...(종료는 0)");
-            try {
-                System.out.print("회차 : ");
-                scoreIndex = sc.nextInt();
-
-                if(scoreIndex == 0) {
-                    return;
-                }
-
-                System.out.print("점수 : ");
-                scoreValue = sc.nextInt();
-
-                if(scoreValue == 0) {
-                    return;
-                }
-
-                break;
-            } catch (Exception e) {
-                System.out.println("잘못된 입력입니다. 다시 입력해주세요.\n");
-            }
-        }
-
-        // 4. 각 클래스에서 구현한 메소드들(get 메소드, add 메소드 등)을 통해 추가 시도
-        student.addScoreBySubject(selectedSubjectId, new Score(ScoreData.getNewUID(), scoreIndex, scoreValue));
-
-        System.out.println("\n점수 등록 성공!");
     }
 
     // 수강생의 과목별 회차 점수 수정
