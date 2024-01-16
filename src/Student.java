@@ -75,24 +75,6 @@ public class Student {
         return scoreBySubject;
     }
 
-    public void addMandatorySubject(String subject) {
-        if(mandatorySubjectList.contains(subject)) {
-            // 메세지
-            return;
-        }
-
-        mandatorySubjectList.add(subject);
-    }
-
-    public void addChoiceSubject(String subject) {
-        if(choiceSubjectList.contains(subject)) {
-            // 메세지
-            return;
-        }
-
-        choiceSubjectList.add(subject);
-    }
-
     public Integer getMandatorySubjectCount() {
         return mandatorySubjectList.size();
     }

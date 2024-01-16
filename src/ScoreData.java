@@ -8,6 +8,35 @@ public class ScoreData {
 
     private static Map<String, Score> scoreStore = new HashMap<>();
 
+    public static void Init() {
+        for(int i = 0; i < 15; i++) {
+            for(int j = 0; j < 3; j++) {
+                String uid = getNewUID();
+                scoreStore.put(uid, new Score(uid, j + 1, (int)(Math.random()*100)));
+            }
+        }
+
+        for(Student student : StudentData.getSortedStudentStore()) {
+            for(String subjectId : student.getMandatorySubjectList()) {
+                for(int i = 1; i <= 3; i++) {
+                    String uid = getNewUID();
+                    Score score = new Score(uid, i, (int)(Math.random()*100));
+                    scoreStore.put(uid, score);
+                    student.addScoreBySubject(subjectId, score);
+                }
+            }
+
+            for(String subjectId : student.getChoiceSubjectList()) {
+                for(int i = 1; i <= 3; i++) {
+                    String uid = getNewUID();
+                    Score score = new Score(uid, i, (int)(Math.random()*100));
+                    scoreStore.put(uid, score);
+                    student.addScoreBySubject(subjectId, score);
+                }
+            }
+        }
+    }
+
     public static String getNewUID() {
         return INDEX_TYPE_SCORE + scoreIndex++;
     }

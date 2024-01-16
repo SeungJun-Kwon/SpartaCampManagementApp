@@ -14,13 +14,14 @@ public class CampManagementApplication {
 
     public static void main(String[] args) {
         SubjectData.Init();
+        StudentData.Init();
+        ScoreData.Init();
         try {
             displayMainView();
         } catch (Exception e) {
             System.out.println("\n오류 발생!\n프로그램을 종료합니다.");
         }
     }
-
 
     /*
     메인 화면
@@ -50,7 +51,6 @@ public class CampManagementApplication {
         }
         System.out.println("프로그램을 종료합니다.");
     }
-
 
     /*
     학생 관리 화면
@@ -196,21 +196,9 @@ public class CampManagementApplication {
     }
 
     private static void inquireStudentByName() {
-        System.out.println("\n이름으로 수강생 목록을 조회합니다...");
-
-        System.out.print("조회할 수강생의 이름을 입력해주세요. ");
-        String name = sc.next();
-
-        List<Student> result = StudentData.findStudentByName(name);
-        if (result == null || result.isEmpty()) {
-            System.out.println(name + " 이름을 가진 수강생이 존재하지 않습니다.\n");
-            return;
-        }
+        printStudentList(getStudentListByName());
 
         System.out.println();
-        for (Student s : result) {
-            System.out.println(s.toString() + "\n");
-        }
     }
 
     private static void inquireStudentByState() {
@@ -241,39 +229,20 @@ public class CampManagementApplication {
     }
 
     private static void displayModifyStudent() {
-        System.out.println("\n수강생 수정...");
+        System.out.println("\n수강생 수정...\n");
 
-        System.out.print("수정할 수강생의 이름을 입력해주세요. ");
-        String name = sc.next();
+        Student student = selectStudent(getStudentListByName());
 
-        List<Student> result = StudentData.findStudentByName(name);
-        if (result == null || result.isEmpty()) {
-            System.out.println(name + " 이름을 가진 수강생이 존재하지 않습니다.\n");
+        if(student == null)
             return;
-        }
-        int index = 1;
 
-        System.out.println();
-        for (Student s : result) {
-            System.out.println(index++ + ". " + s.toString() + "\n");
-        }
-
-        System.out.print("수정할 수강생의 번호를 입력해주세요(종료는 0) : ");
         while (true) {
             try {
-                index = sc.nextInt();
-
-                if (index == 0) {
-                    break;
-                }
-
-                Student s = result.get(index - 1);
-
                 System.out.println("\n[현재 수강생 정보]");
-                System.out.println(s.toString() + "\n");
+                System.out.println(student + "\n");
                 System.out.print("수정할 이름을 입력해주세요 : ");
 
-                name = sc.next();
+                String name = sc.next();
 
                 if (name.trim().isEmpty()) {
                     System.out.println("잘못된 입력입니다. 다시 입력해주세요.");
@@ -289,8 +258,8 @@ public class CampManagementApplication {
                     continue;
                 }
 
-                s.setStudentName(name);
-                s.setStudentState(state);
+                student.setStudentName(name);
+                student.setStudentState(state);
                 break;
             } catch (Exception e) {
                 System.out.println("잘못된 입력입니다. 다시 입력해주세요.");
@@ -314,14 +283,8 @@ public class CampManagementApplication {
             System.out.println("1. 수강생의 과목별 시험 회차 및 점수 등록");
             System.out.println("2. 수강생의 과목별 회차 점수 수정");
             System.out.println("3. 수강생의 특정 과목 회차별 등급 조회");
-            System.out.println("4. 회차 및 점수 등록");
-            System.out.println("5. 모든 점수 조회");
-            System.out.println("6. 회차별 점수 조회");
-            System.out.println("7. 점수 수정");
-            System.out.println("8. 등급 조회");
-            System.out.println("9. 전체 학생의 전체 점수 조회");
-            System.out.println("10. 수강생의 과목별 평균 등급을 조회");
-            System.out.println("11. 특정 상태 수강생들의 필수 과목 평균 등급을 조회");
+            System.out.println("4. 수강생의 과목별 평균 등급을 조회");
+            System.out.println("5. 특정 상태 수강생들의 필수 과목 평균 등급을 조회");
             System.out.print("관리 항목을 선택하세요...");
             int input = sc.nextInt();
 
@@ -330,80 +293,14 @@ public class CampManagementApplication {
                 case 1 -> createScore(); // 수강생의 과목별 시험 회차 및 점수 등록
                 case 2 -> updateRoundScoreBySubject(); // 수강생의 과목별 회차 점수 수정
                 case 3 -> inquireRoundGradeBySubject(); // 수강생의 특정 과목 회차별 등급 조회
-                case 4 -> addScore(); // 회차 및 점수 등록
-                case 5 -> getScore(); // 모든 점수 조회
-                case 6 -> getScoreByIndex(); // 회차별 점수 조회
-                case 7 -> uppdateScore(); // 점수 수정
-
+                case 4 -> inquireAverageScoreBySubjectForStudent(); // 수강생의 과목별 평균 등급을 조회
+                case 5 -> inquireAverageMandatoryScoreBySubjectForStudentWithState(); // 특정 상태 수강생들의 필수 과목 평균 등급을 조회
                 default -> {
                     System.out.println("잘못된 입력입니다.\n메인 화면 이동...");
                     flag = false;
                 }
             }
         }
-    }
-
-    private static void addScore() {
-        // 점수 정보를 입력받고 Data에 추가하는 메소드
-        // 1. 회차와 점수 값을 입력받는다
-        System.out.print("회차 : ");
-        int index = sc.nextInt();
-        System.out.print("점수 : ");
-        int scoreValue = sc.nextInt();
-
-        // 2. 입력받은 값으로 새로운 Score를 만든다
-        Score score = new Score(ScoreData.getNewUID(), index, scoreValue);
-        System.out.println(score.getScoreIndex() + " 회차 " + score.getScoreValue() + "점");
-
-        // 3. 방금 만든 Score를 ScoreData에 추가 시도한다
-        if (ScoreData.addScore(score)) {
-            System.out.println("점수 추가가 완료됐습니다!");
-        } else {
-            System.out.println("점수 추가가 실패했습니다");
-        }
-    }
-
-    private static void getScore() {
-        // 모든 점수의 정보를 출력하는 메소드
-        List<Score> scoreList = ScoreData.getScoreList();
-
-        for (Score s : scoreList) {
-            System.out.println(s.getScoreIndex() + "회차 점수 : " + s.getScoreValue());
-        }
-        System.out.println("\n점수 조회 완료\n");
-    }
-
-    private static void getScoreByIndex() {
-        // 회차를 받아서 점수를 보여주기
-        // 1. 회차를 입력받기
-        System.out.print("회차를 입력하세요: ");
-        int a = sc.nextInt();
-
-        // 2. 해당 회차에 대한 정보들을 가져오기
-        List<Score> li;
-        li = ScoreData.getScoreByIndex(a);
-
-        for (int i = 0; i < li.size(); i++) {
-            Score score = li.get(i);
-            System.out.println(a + "회차 점수 : " + score.getScoreValue());
-        }
-    }
-
-    // 점수 수정 메서드
-    private static void uppdateScore() {
-        System.out.print("수정할 회차를 입력하세요: ");
-        int n = sc.nextInt();
-        System.out.print("새로운 점수를 입력하세요: ");
-        int s = sc.nextInt();
-        ScoreData.updateScore(n, s);
-    }
-
-    // 등급 조회 메서드
-    private static void gradeCheckMandatory(int n) {
-        System.out.println(n + " 회차의 등급: " + ScoreData.mandatoryGradeCheck(n));
-    }
-    private static void gradeCheckChoice(int n) {
-        System.out.println(n + " 회차의 등급: " + ScoreData.choiceGradeCheck(n));
     }
 
     private static String getStudentId() {
@@ -436,6 +333,9 @@ public class CampManagementApplication {
     private static void printStudentList(List<Student> studentList) {
         int index = 1;
 
+        if(studentList == null || studentList.isEmpty())
+            return;
+
         System.out.println();
 
         for (Student s : studentList) {
@@ -446,6 +346,9 @@ public class CampManagementApplication {
     // 수강생의 리스트들을 출력하고 그 중에서 수강생을 선택해 반환하는 메소드
     private static Student selectStudent(List<Student> studentList) {
         printStudentList(studentList);
+
+        if(studentList == null || studentList.isEmpty())
+            return null;
 
         while (true) {
             try {
@@ -469,12 +372,8 @@ public class CampManagementApplication {
         // 기능 구현
         // 특정 학생의 특정 과목에 대한 점수(회차, 점수값)을 추가하는 메소드
         // 1. 추가할 학생의 이름을 입력받아 해당 이름 학생들의 리스트를 받고 학생을 선택
-        List<Student> studentList = getStudentListByName();
-        if (studentList == null) {
-            return;
-        }
+        Student student = selectStudent(getStudentListByName());
 
-        Student student = selectStudent(studentList);
         if (student == null) {
             return;
         }
@@ -554,8 +453,8 @@ public class CampManagementApplication {
             }
         }
     }
-    // 수강생의 과목별 회차 점수 수정
 
+    // 수강생의 과목별 회차 점수 수정
     private static void updateRoundScoreBySubject() {
         System.out.println("시험 점수를 수정합니다...");
         // 기능 구현
@@ -710,14 +609,14 @@ private static void inquireAverageScoreBySubjectForStudent() {
     }
 }
 
-private static void inquireAverageMandatoryScoreBySubjectForStudentWithState() {
-    try {
-        String studentState = sc.nextLine().strip();
-        List<Student> students = StudentData.findStudentByState(studentState);
-        if (students.isEmpty()) {
-            System.out.format("** %s인 학생이 존재하지 않습니다. **", studentState);
-            return;
-        }
+    private static void inquireAverageMandatoryScoreBySubjectForStudentWithState() {
+        try {
+            String studentState = sc.next().strip();
+            List<Student> students = StudentData.findStudentByState(studentState);
+            if (students.isEmpty()) {
+                System.out.format("** %s인 학생이 존재하지 않습니다. **", studentState);
+                return;
+            }
 
         System.out.format("%n%s인 학생들의 과목별 평균 점수%n", students);
         System.out.println("[ 필수 과목 ]");
