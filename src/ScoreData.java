@@ -30,28 +30,13 @@ public class ScoreData {
 
     // 요구사항 1. 과목을 입력받아 회차와 점수를 추가하는 메서드
     public static boolean addScore(Score score) {
-        int index = score.getScoreIndex();
-
-        // 같은 회차가 존재하는지 검사 -> 입력 취소
-        boolean hasSameIndex = false;
-        for(Score s : scoreStore.values()) {
-            if (s.getScoreIndex() == index) {
-                hasSameIndex = true;
-                break;
-            }
-        }
-
-        if((hasSameIndex)) {
-            return false;
-        }
-
         // 회차 1~9
         if(!(score.getScoreIndex() >= 1 && score.getScoreIndex() <= 9)){
             return false;
         }
 
         // 점수 0~100
-        if(!(score.getScoreValue() >= 0 && score.getScoreValue() <= 100)){
+        if (!(score.getScoreValue() >= 0 && score.getScoreValue() <= 100)){
             return false;
         }
 
@@ -59,12 +44,16 @@ public class ScoreData {
         return true;
     }
 
+    public static void removeScore(String scoreId) {
+        scoreStore.remove(scoreId);
+    }
+
     // 요구사항 2. 과목별 회차 점수를 수정.
     public static boolean updateScore(int index, int newScore){
         Score target = null;
 
         for (Score s: scoreStore.values()){
-            if(s.getScoreIndex() == index){
+            if (s.getScoreIndex() == index){
                 target = s;
                 break;
             }
@@ -121,5 +110,13 @@ public class ScoreData {
             s = "N";
         }
         return s;
+    }
+
+    public static double getAverageScoreByScoreIds(List<String> ids) {
+        return ids.stream().map(ScoreData::getScoreById).mapToInt(Score::getScoreValue).average().orElse(0D);
+    }
+
+    public static double calculateAverageScore(List<Score> scores) {
+        return scores.stream().mapToInt(Score::getScoreValue).average().orElse(0F);
     }
 }
