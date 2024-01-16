@@ -572,6 +572,12 @@ public class CampManagementApplication {
             }
         }
     }
+    private static void gradeCheckMandatory(int n) {
+        System.out.println(n + " 회차의 등급: " + ScoreData.mandatoryGradeCheck(n));
+    }
+    private static void gradeCheckChoice(int n) {
+        System.out.println(n + " 회차의 등급: " + ScoreData.choiceGradeCheck(n));
+    }
 
 private static void inquireAverageScoreBySubjectForStudent() {
     try {
