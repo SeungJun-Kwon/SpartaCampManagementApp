@@ -75,11 +75,11 @@ public class ScoreData {
         }
         return "등록되지 않았습니다.";
     }
-    public static String choicelGradeCheck(int scoreIndex){
+    public static String choiceGradeCheck(int scoreIndex){
 
         for(Score s : scoreStore.values()){
             if(s.getScoreIndex() == scoreIndex){
-                return choicelGrade(s.getScoreValue());
+                return choiceGrade(s.getScoreValue());
             }
         }
         return "등록되지 않았습니다.";
@@ -102,7 +102,7 @@ public class ScoreData {
         }
         return s;
     }
-    public static String choicelGrade(int score) { // 선택과목 등급
+    public static String choiceGrade(int score) { // 선택과목 등급
         String s = "";
         if ((score >= 90) && (score <= 100)){
             s = "A";
@@ -121,7 +121,7 @@ public class ScoreData {
     }
 
     public static double getAverageScoreByScoreIds(List<String> ids) {
-        return ids.stream().map(ScoreData::getScoreById).mapToInt(Score::getScoreValue).average().orElse(0D);
+        return ids.stream().map(ScoreData::getScoreByID).mapToInt(Score::getScoreValue).average().orElse(0D);
     }
 
     public static double calculateAverageScore(List<Score> scores) {

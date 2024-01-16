@@ -402,8 +402,8 @@ public class CampManagementApplication {
     private static void gradeCheckMandatory(int n) {
         System.out.println(n + " 회차의 등급: " + ScoreData.mandatoryGradeCheck(n));
     }
-    private static void GradeCheckChoicel(int n) {
-        System.out.println(n + " 회차의 등급: " + ScoreData.choicelGradeCheck(n));
+    private static void gradeCheckChoice(int n) {
+        System.out.println(n + " 회차의 등급: " + ScoreData.choiceGradeCheck(n));
     }
 
     private static String getStudentId() {
@@ -464,7 +464,6 @@ public class CampManagementApplication {
     }
 
     // 수강생의 과목별 시험 회차 및 점수 등록
-
     private static void createScore() {
         System.out.println("시험 점수를 등록합니다...");
         // 기능 구현
@@ -623,16 +622,20 @@ public class CampManagementApplication {
         System.out.println("\n회차별 등급을 조회합니다");
         // 1. 조회할 학생의 이름을 입력받아 해당 이름 학생들의 리스트를 받고 학생을 선택
         System.out.print("조회할 학생의 이름을 입력하세요: ");
-        String studentName = sc.nextLine();
+        String studentName = sc.next();
         List<Student> students = StudentData.findStudentByName(studentName);
         if (students.isEmpty()) {
             return;
         }
+        // 조회한 학생의 리스트 출력해서 어떤 학생을 선택할 건지 보여주기
+        printStudentList(students);
+
         // 선택
         Student student;
         System.out.println("학생 번호를 선택 하세요");
         int i = sc.nextInt();
-        student = students.get(i);
+        student = students.get(i - 1);
+        System.out.println();
 
         // 2. 해당 학생의 과목 리스트(필수, 선택)들을 받고 조회할 과목을 선택
         String selectedSubjectId;
@@ -640,19 +643,35 @@ public class CampManagementApplication {
         subjectIdList.addAll(student.getMandatorySubjectList());
         subjectIdList.addAll(student.getChoiceSubjectList());
 
-        System.out.print("조회할 과목을 입력하세요: ");
+        // 학생이 갖고 있는 과목 리스트를 출력해서 어떤 과목을 선택할 건지
+        int index = 1;
+
+        System.out.println("[ 필수과목 ] ");
+        for(String s : student.getMandatorySubjectList()){
+            System.out.println(index++ + ". " + SubjectData.findSubjectById(s).getSubjectName());
+        }
+        System.out.println("\n[ 선택과목 ] ");
+        for(String s : student.getChoiceSubjectList()){
+            System.out.println(index++ + ". " + SubjectData.findSubjectById(s).getSubjectName());
+        }
+
+        System.out.print("\n과목을 입력하세요: ");
         int s = sc.nextInt();
         selectedSubjectId = subjectIdList.get(s-1);
+        System.out.println();
 
-        // 회차 선택, //학생의 과목의 회차 가져오기....
-        Score score;
-        System.out.print("조회할 등급의 회차를 입력하세요: ");
-        int scoreIndex = sc.nextInt();
-        // if(필수이면 )
-        // return essentialGrade(score.getScoreValue());
-        // 선택이면
-        // return choicelGrade(score.getScoreValue());
-        System.out.println(scoreIndex + " 회차의 등급: " + ScoreData.gradeCheck(scoreIndex));
+        while (true){
+            System.out.println("등급 조회를 시작합니다. 종료를 원하시면 0을 입력하세요");
+            System.out.print("조회할 회차를 입력하세요: ");
+            int n = sc.nextInt();
+            if(n == 0) break;
+
+            if (student.getMandatorySubjectList().contains(selectedSubjectId)) {
+                gradeCheckMandatory(n);
+            } else if(student.getChoiceSubjectList().contains(selectedSubjectId)){
+                gradeCheckChoice(n);
+            }
+        }
     }
 
 private static void inquireAverageScoreBySubjectForStudent() {
