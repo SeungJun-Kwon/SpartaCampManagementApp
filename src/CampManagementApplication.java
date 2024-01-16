@@ -1,4 +1,5 @@
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Scanner;
 
@@ -297,9 +298,9 @@ public class CampManagementApplication {
             System.out.println("==================================");
             System.out.println("점수 관리 실행 중...");
             System.out.println("0. 메인 화면 이동");
-           /* System.out.println("1. 수강생의 과목별 시험 회차 및 점수 등록");
+            System.out.println("1. 수강생의 과목별 시험 회차 및 점수 등록");
             System.out.println("2. 수강생의 과목별 회차 점수 수정");
-            System.out.println("3. 수강생의 특정 과목 회차별 등급 조회");*/
+            System.out.println("3. 수강생의 특정 과목 회차별 등급 조회");
             System.out.println("4. 회차 및 점수 등록");
             System.out.println("5. 모든 점수 조회");
             System.out.println("6. 회차별 점수 조회");
@@ -539,51 +540,42 @@ public class CampManagementApplication {
     }
 
     // 수강생의 특정 과목 회차별 등급 조회
+    // 특정 학생의 특정 과목에 대한 회차별 점수값과 등급을 조회하는 메소드
     private static void inquireRoundGradeBySubject() {
-        String studentId = getStudentId(); // 관리할 수강생 고유 번호
-        // 기능 구현 (조회할 특정 과목)
-        System.out.println("회차별 등급을 조회합니다...");
-        // 기능 구현
-        // 특정 학생의 특정 과목에 대한 회차별 점수값과 등급을 조회하는 메소드
+        System.out.println("회차별 등급을 조회합니다");
         // 1. 조회할 학생의 이름을 입력받아 해당 이름 학생들의 리스트를 받고 학생을 선택
+        System.out.print("조회할 학생의 이름을 입력하세요: ");
+        String studentName = sc.nextLine();
+        List<Student> students = StudentData.findStudentByName(studentName);
+        if (students.isEmpty()) {
+            return;
+        }
+        // 선택
+        Student student;
+        System.out.println("학생을 선택 하세요");
+        int i = sc.nextInt();
+        student = students.get(i);
 
         // 2. 해당 학생의 과목 리스트(필수, 선택)들을 받고 조회할 과목을 선택
+        String selectedSubjectId;
+        List<String> subjectIdList = new ArrayList<>();
+        subjectIdList.addAll(student.getMandatorySubjectList());
+        subjectIdList.addAll(student.getChoiceSubjectList());
 
-        // 3. 해당 과목의 점수값들을 출력
-        // 가능하면 맨 밑에 평균 점수도 출력
+        System.out.print("조회할 과목을 입력하세요: ");
+        int s = sc.nextInt();
+        selectedSubjectId = subjectIdList.get(s-1);
 
-        System.out.println("\n등급 조회 성공!");
+        // 회차 선택, //학생의 과목의 회차 가져오기....
+        Score score;
+        System.out.print("조회할 등급의 회차를 입력하세요: ");
+        int scoreIndex = sc.nextInt();
+        // if(필수이면 )
+        // return essentialGrade(score.getScoreValue());
+        // 선택이면
+        // return choicelGrade(score.getScoreValue());
+        System.out.println(scoreIndex + " 회차의 등급: " + ScoreData.gradeCheck(scoreIndex));
     }
-
-  // 수강생의 특정 과목 회차별 등급 조회
-  private static void inquireRoundGradeBySubject() {
-    // String studentId = getStudentId(); // 관리할 수강생 고유 번호
-    // 기능 구현 (조회할 특정 과목)
-    System.out.println("회차별 등급을 조회합니다...");
-    // 기능 구현
-    // 특정 학생의 특정 과목에 대한 회차별 점수값과 등급을 조회하는 메소드
-    // 1. 조회할 학생의 이름을 입력받아 해당 이름 학생들의 리스트를 받고 학생을 선택
-    System.out.print("조회할 학생의 이름을 입력하세요: ");
-    String studentName = sc.nextLine();
-    List<Student> students = StudentData.findStudentByName(studentName); // 해당 이름의 학생들을 보여줌
-    System.out.println(students);
-
-    // 2. 해당 학생의 과목 리스트(필수, 선택)들을 받고 조회할 과목을 선택
-
-    System.out.print("조회할 과목을 선택하세요: ");
-    String subjectName = sc.nextLine();
-    StudentData.findStudentBySubjectName(subjectName);
-
-
-    // 3. 해당 과목의 점수값들을 출력
-    // 가능하면 맨 밑에 평균 점수도 출력
-    for(Student s : StudentData.getStudentStore().values()){
-
-    }
-
-    System.out.println("\n등급 조회 성공!");
-  }
-
     private static void displaySubjectView() {
         boolean flag = true;
         while (flag) {
