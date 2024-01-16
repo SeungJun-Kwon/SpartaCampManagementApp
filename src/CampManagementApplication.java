@@ -347,34 +347,6 @@ public class CampManagementApplication {
         }
     }
 
-    // 테스트용. 모든 수강생들의 모든 점수 정보를 출력하는 메소드
-    private static void inquireAllStudentsScore() {
-        List<Student> studentList = StudentData.getSortedStudentStore();
-
-        for (Student student : studentList) {
-            System.out.println("\n[ " + student.getStudentName() + " ] 점수 정보\n");
-            List<String> subjectList = new ArrayList<>();
-            subjectList.addAll(student.getMandatorySubjectList());
-            subjectList.addAll(student.getChoiceSubjectList());
-
-            for (String subjectId : subjectList) {
-                String subjectName = SubjectData.findSubjectById(subjectId).getSubjectName();
-                System.out.println("\"" + subjectName + "\"");
-                List<String> scoreList = student.getScoreIdListBySubject(subjectId);
-                for (String scoreId : scoreList) {
-                    Score score = ScoreData.getScoreByID(scoreId);
-                    if (score == null || score.getScoreId().equals("0")) {
-                        continue;
-                    }
-
-                    System.out.print(score.getScoreIndex() + " : " + score.getScoreValue() + " | ");
-                }
-
-                System.out.println();
-            }
-        }
-    }
-
     private static void addScore() {
         // 점수 정보를 입력받고 Data에 추가하는 메소드
         // 1. 회차와 점수 값을 입력받는다
